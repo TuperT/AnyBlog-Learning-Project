@@ -1,0 +1,10 @@
+allowBuilds:
+  '@prisma/engines': false
+  argon2: false
+  core-js: true
+  esbuild: false
+  jss: true
+  node-base64: false
+  prisma: false
+  sharp: true
+  unrs-resolver: true
