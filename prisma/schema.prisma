@@ -18,27 +18,39 @@ enum userRole {
 }
 
 model User {
-  id              String   @id @default(uuid())
-  profilePicture  String?  @default("/default-avatar.png")
-  bannerPicture   String?  @default("/default-banner.png")
-  name            String   @db.VarChar(20)
-  email           String   @unique
-  password        String
-  role            userRole @default(USER)
-  post            Post[]
-  createAt        DateTime @default(now()) 
+  id             String   @id @default(uuid())
+  profilePicture String?  @default("/default-avatar.png")
+  bannerPicture  String?  @default("/default-banner.png")
+  name           String   @db.VarChar(20)
+  email          String   @unique
+  password       String
+  role           userRole @default(USER)
+  post           Post[]
+  comment        PostComment[]
+  createAt       DateTime @default(now())
 }
 
 model Post {
-  id          String   @id @default(cuid()) 
+  id          String   @id @default(cuid())
   image       String
   title       String
   slug        String
   description String
   content     String
   published   Boolean  @default(false)
-  author      User     @relation(fields: [authorId], references: [id]) 
-  authorId    String   
-  createAt    DateTime @default(now()) 
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  comment     PostComment[]
+  createAt    DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model PostComment {
+  id        String   @id @default(cuid())
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+  comment   String
+  createAt  DateTime @default(now())
 }

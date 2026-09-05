@@ -40,7 +40,6 @@ export const POST = async (request: NextRequest) => {
                 name: body.name,
                 email: body.email,
                 password: await argon2.hash(body.password),
-                profilePicture: body.profilePicture,
             },
             select: {
                 id: true,

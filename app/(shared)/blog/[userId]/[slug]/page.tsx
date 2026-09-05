@@ -6,6 +6,11 @@ import Link from "next/link"
 import Markdown from "@/components/layout/Markdown"
 import { Suspense } from "react"
 import BlogImageSkeleton from "@/components/blog/BlogImageSkeleton"
+import BlogCommentForm from "@/components/blog/BlogCommentForm"
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
+import { MessageCircleQuestionMark } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
+import BlogCommentCard from "@/components/blog/BlogCommentCard"
 
 const page = async ({ params }: { params: Promise<{ userId:string, slug: string }> }) => {
     const { userId, slug } = await params
@@ -20,13 +25,22 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
                 select: {
                     name: true,
                     profilePicture: true,
-                }
+                },
+            },
+            comment: {
+                select: {
+                    comment: true,
+                    createAt: true,
+                    author: true
+                },
             }
         }
     })
-    
+
+    if (!post) return;
+
     return (
-        <section className="flex justify-center mt-5 px-0 sm:px-20 md:px-30 lg:px-40 xl:px-50">
+        <section className="grid grid-cols-1 md:grid-cols-[1.2fr_0.5fr] mt-5 gap-6">
             <article className="flex flex-col">
                 <Suspense fallback={<BlogImageSkeleton />}>
                     <div className="relative w-full overflow-hidden rounded-2xl aspect-video">
@@ -36,6 +50,7 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
                             width={1600}
                             height={900}
                             className="object-cover"
+                            loading="eager"
                         />
                     </div>
                 </Suspense>
@@ -76,6 +91,42 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
                     />
                 </article>
             </article>
+
+            <aside className="sticky top-20 mt-2 md:max-h-[80%] overflow-auto pr-2">
+                <h1 className="font-semibold">Comments</h1>
+                <Separator className="mb-2" />
+                <BlogCommentForm postId={post?.id ?? ""} />
+                {
+                    post?.comment.length >= 1
+                    ? (
+                        <article className="flex flex-col gap-4 mt-2">
+                            {
+                            post?.comment?.map((comment, key) => (
+                                <BlogCommentCard
+                                key={key}
+                                authorName={comment.author.name}
+                                authorProfilePicture={comment.author.profilePicture?.toString() ?? "./default-avatar.png"}
+                                comment={comment.comment}
+                                date={comment.createAt}
+                                />
+                            ))
+                            }
+                        </article>
+                    )
+                    : (
+                        <Empty className="border-2 border-border mt-2">
+                            <EmptyHeader>
+                                <EmptyMedia variant="icon">
+                                    <MessageCircleQuestionMark />
+                                </EmptyMedia>
+                                <EmptyTitle>
+                                    <p>There`s no comment yet</p>
+                                </EmptyTitle>
+                            </EmptyHeader>
+                        </Empty>
+                    )
+                }
+            </aside>
         </section>
     )
 }

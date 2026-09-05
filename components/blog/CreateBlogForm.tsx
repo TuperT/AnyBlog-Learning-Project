@@ -129,7 +129,7 @@ const CreateBlogForm = ({ name, profilePicture }: createBlogFormProps) => {
 
         const result = await res.json();
 
-        if (!res.ok) {
+        if (!result.ok) {
             setIsSubmited(false)
             return toast.error(result.message || "Failed to create blog");
         }
@@ -333,12 +333,11 @@ const CreateBlogForm = ({ name, profilePicture }: createBlogFormProps) => {
                                 codeBlockPlugin({ defaultCodeBlockLanguage:"txt" }),
                                 codeMirrorPlugin({
                                     codeBlockLanguages: {
-                                        rust: "Rust",
                                         cpp: "C++",
+                                        rust: "Rust",
                                         c: "C", 
                                         javascript: "JavaScript",
                                         js: "JavaScript",
-                                        typescript: "TypeScript",
                                         ts: "TypeScript",
                                         tsx: "TypeScript (React)",
                                         css: "CSS",
