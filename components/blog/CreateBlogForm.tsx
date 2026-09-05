@@ -129,7 +129,7 @@ const CreateBlogForm = ({ name, profilePicture }: createBlogFormProps) => {
 
         const result = await res.json();
 
-        if (!result.ok) {
+        if (!res.ok) {
             setIsSubmited(false)
             return toast.error(result.message || "Failed to create blog");
         }

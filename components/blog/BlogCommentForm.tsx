@@ -44,9 +44,9 @@ const BlogCommentForm = ({ postId }: blogCommentFormProps) => {
         })
 
         const result = await res.json();
-        if (!result.ok) return toast.error(result.message || "Failed to send comment")
+        if (!res.ok) return toast.error(result.message || "Failed to send comment")
         
-        return router.push("/");
+        toast.success("Comment posted")
     }
 
     return (
