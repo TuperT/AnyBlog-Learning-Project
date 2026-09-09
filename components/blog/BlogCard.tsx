@@ -31,66 +31,59 @@ const BlogCard = ({
     authorId,
     authorImage,
     createdAt,
-    updatedAt,
 }: BlogCardProps) => {
-    const isEdited = updatedAt && new Date(updatedAt).getTime() !== new Date(createdAt).getTime();
     const readingTime = Math.ceil(contentLength / 200)
 
     return (
-        <div className="overflow-hidden p-2 md:p-0 border border-border shadow-card-shadow transition-all duration-250 hover:shadow-card-shadow-hover hover:-translate-y-0.5 rounded-xl w-full h-full grid grid-cols-1 md:grid-cols-[0.8fr_1fr]">
-            <div className="p-4 md:p-0">
-                <div className="relative min-h-54 md:min-h-68 w-full overflow-hidden rounded-md md:rounded-none">
-                    <Image 
-                    src={image}
-                    alt="blog-image"
-                    fill
-                    className="object-cover"
+        <div className="overflow-hidden p-2 sm:p-0 border border-border shadow-card-shadow transition-all duration-250 hover:shadow-card-shadow-hover hover:-translate-y-0.5 rounded-xl w-full h-full grid grid-cols-1 md:grid-cols-[0.8fr_1fr]">
+            <div className="p-3 sm:p-0">
+                <div className="relative aspect-video sm:aspect-auto sm:min-h-56 lg:min-h-64 xl:min-h-72 w-full overflow-hidden rounded-lg sm:rounded-none">
+                    <Image
+                        src={image}
+                        alt="blog-image"
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 40vw, 320px"
+                        className="object-cover"
                     />
                 </div>
             </div>
 
-            <div className="flex min-w-0 flex-col justify-between px-4 md:py-4">
+            <div className="flex min-w-0 flex-col justify-between gap-4 px-3 py-3 sm:px-4 sm:py-4">
                 {/* <div className="flex flex-row items-center">
                     <BlogMenu postId={id} />
                 </div> */}
 
-                <div className="flex flex-col gap-2">
-                    <h1 className="font-jakarta font-bold text-sm sm:text-md lg:text-lg">
+                <div className="flex min-w-0 flex-col gap-2">
+                    <h1 className="min-w-0 font-jakarta font-bold text-base sm:text-lg lg:text-xl leading-snug">
                         {title}
                     </h1>
-                    <p className="text-muted-foreground line-clamp-2 sm:line-clamp-3 font-inter text-[3vw] md:text-xs">
+                    <p className="min-w-0 text-muted-foreground line-clamp-2 sm:line-clamp-3 font-inter text-xs sm:text-sm">
                         {description}
                     </p>
                 </div>
 
-                <div className="flex flex-row flex-wrap items-center justify-between mt-4 md:mt-0">
-                    <div className="flex flex-row gap-2 items-center">
-                        <Avatar>
-                            <AvatarImage
-                            src={authorImage}
-                            />
-
+                <div className="flex flex-row flex-wrap items-center mt-2 sm:mt-0">
+                    <div className="flex min-w-0 flex-row gap-2 items-center flex-1">
+                        <Avatar size="sm" className="shrink-0">
+                            <AvatarImage src={authorImage} />
                             <AvatarFallback>
                                 {author.at(0)}
                             </AvatarFallback>
                         </Avatar>
 
-                        <div className="flex flex-col md:flex-row md:items-center md:gap-2">
-                            <p className="font-semibold text-start leading-tight font-jakarta truncate text-[3vw] sm:text-sm md:text-md">
+                        <div className="flex min-w-0 flex-col lg:flex-row lg:items-center sm:gap-2">
+                            <p className="min-w-0 font-semibold text-start leading-tight font-jakarta truncate text-xs sm:text-sm">
                                 {author}
                             </p>
 
-                            <span className="flex flex-row items-center">
-                                <p className="flex flex-row whitespace-nowrap text-[1.6vw] md:text-xs text-muted-foreground font-inter">
-                                    {
-                                    createdAt && formatDate(updatedAt!) != formatDate(createdAt) 
-                                    ? formatDate(createdAt) : `(updated ${formatDate(updatedAt!)})`
-                                    }
+                            <span className="flex flex-row items-center min-w-0">
+                                <p className="whitespace-nowrap text-[11px] sm:text-xs text-muted-foreground font-inter leading-tight">
+                                    {formatDate(createdAt)}
                                 </p>
 
-                                <Dot size={16} />
+                                <Dot size={16} className="shrink-0" />
 
-                                <p className="whitespace-nowrap text-[1.6vw] md:text-xs text-muted-foreground font-inter">
+                                <p className="whitespace-nowrap text-[11px] sm:text-xs text-muted-foreground font-inter leading-tight">
                                     {`${readingTime} min read`}
                                 </p>
                             </span>
@@ -98,12 +91,12 @@ const BlogCard = ({
                     </div>
 
                     <Link
-                    href={`/blog/${authorId}/${slug}`}
-                    className={buttonVariants({ variant: "link", className: "group" })}
+                        href={`/blog/${authorId}/${slug}`}
+                        className={buttonVariants({ variant: "link", className: "group shrink-0" })}
                     >
-                        <span className="flex flex-row items-center">
-                            Read blog <ArrowRight size={16} className="transition-all duration-200 ease-in-out delay-75 group-hover:translate-x-1" />
-                        </span>
+                        <p className="flex flex-row items-center text-[10px] sm:text-xs md:text-sm">
+                            Read blog <ArrowRight size={16} className="ml-1 transition-all duration-200 ease-in-out delay-75 group-hover:translate-x-1" />
+                        </p>
                     </Link>
                 </div>
             </div>

@@ -40,7 +40,7 @@ export default async function Home(
   // : posts
 
   return (
-    <div className="mt-12 md:mx-20 lg:mx-40 px-4 sm:px-6 lg:px-0 xl:px-8">
+    <div className="mt-12 md:mx-4 lg:mx-24 px-4 sm:px-6 lg:px-0 xl:px-8">
       <header className="flex flex-col gap-2">
         <p className="flex flex-row items-center gap-2 rounded-full py-2 px-4 bg-secondary w-fit text-[2vw] md:text-xs text-secondary-foreground font-semibold font-inter">
           <span className="size-2 bg-primary rounded-full"></span>

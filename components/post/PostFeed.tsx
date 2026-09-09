@@ -1,11 +1,10 @@
 "use client"
 
 import { Prisma } from "@/lib/generated/prisma/client"
-import { FileText, Link, LoaderCircle, PenBox } from "lucide-react";
+import { FileText, LoaderCircle} from "lucide-react";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { BlogCardSkeleton } from "../blog/BlogCardSkeleton";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
-import { buttonVariants } from "../ui/button";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import BlogCard from "../blog/BlogCard";
 
 type PostFeedPropsAuthor = Prisma.PostGetPayload<{
@@ -90,7 +89,6 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
                     author={post.author.name ?? "Unknown"}
                     authorImage={post.author.profilePicture ?? ""}
                     createdAt={post.createdAt}
-                    updatedAt={post.updatedAt}
                     />
                 ))
                 }
