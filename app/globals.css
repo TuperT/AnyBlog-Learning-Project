@@ -174,7 +174,7 @@
 /* MDXEditor: map its CSS variables to the app's Tailwind color palette
    so dark/light mode stays in sync automatically */
 .mdxeditor {
-  --basePageBg: var(--background);
+  --basePageBg: var(--card);
   --baseBase: var(--background);
   --baseBgSubtle: var(--muted);
   --baseBg: var(--card);
@@ -183,10 +183,15 @@
   --baseLine: var(--border);
   --baseBorder: var(--border);
   --baseBorderHover: var(--ring);
-  --baseSolid: var(--foreground);
-  --baseSolidHover: var(--foreground);
+  --baseSolid: var(--primary);
+  --baseSolidHover: var(--primary);
   --baseText: var(--foreground);
-  --baseTextContrast: var(--background);
+  --baseTextContrast: var(--foreground);
+  --baseTextSubtle: var(--muted-foreground);
+  --baseTextDisabled: var(--muted-foreground);
+  --baseIcon: var(--foreground);
+  --baseIconHover: var(--primary);
+  --baseIconDisabled: var(--muted-foreground);
   --font-mono: var(--font-mono);
   --font-body: var(--font-sans);
   --radius-small: var(--radius-sm);
@@ -194,7 +199,8 @@
   --radius-large: var(--radius-lg);
 }
 
-/* Prose (Tailwind Typography) dark mode tweaks */
+/* Prose (Tailwind Typography) light/dark tone mapping */
+.prose,
 .dark .prose {
   --tw-prose-body: var(--foreground);
   --tw-prose-headings: var(--foreground);
@@ -234,13 +240,205 @@
   --tw-prose-invert-td-borders: var(--border);
 }
 
-/* highlight.js (atom-one-dark) - only override container bg/fg, let the theme handle tokens */
-.hljs {
-  background: var(--accent) !important;
+/* Keep MDXEditor code blocks on the app surface, not the package default light syntax surface.
+   NOTE: codeBlockPlugin + codeMirrorPlugin renders CodeMirror (not hljs),
+   and CodeMirror ships with a hardcoded light (white) theme, which is the
+   white bar seen in dark mode. These overrides force it onto app tokens. */
+.mdxeditor .hljs,
+.mdxeditor pre,
+.mdxeditor code {
+  background: var(--card);
+  color: var(--foreground);
+}
+
+.mdxeditor .hljs-comment { color: var(--muted-foreground); }
+.mdxeditor .hljs-keyword { color: var(--primary); }
+.mdxeditor .hljs-string { color: var(--chart-4); }
+.mdxeditor .hljs-number { color: var(--chart-5); }
+.mdxeditor .hljs-function { color: var(--chart-3); }
+.mdxeditor .hljs-title { color: var(--foreground); }
+
+/* CodeMirror wrapper + toolbar follow the app surface in both themes */
+.mdxeditor [class*="_codeMirrorWrapper_"] {
+  background: var(--card);
+  border-color: var(--border);
+}
+
+.mdxeditor [class*="_codeMirrorToolbar_"] {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+/* Select triggers (BlockTypeSelect in the main toolbar + language select in
+   the code block toolbar) are Radix buttons, not native <select> elements. */
+.mdxeditor [class*="_toolbarNodeKindSelectTrigger_"],
+.mdxeditor [class*="_toolbarButtonSelectTrigger_"],
+.mdxeditor [class*="_selectTrigger_"],
+.mdxeditor [class*="_toolbarCodeBlockLanguageSelectTrigger_"] {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.mdxeditor [class*="_selectTrigger_"][data-placeholder] > span:first-child {
+  color: var(--muted-foreground) !important;
+}
+
+/* Native select/option fallback (js-yaml / frontmatter dialogs, etc.) */
+.mdxeditor select {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+  border-color: var(--border) !important;
+}
+
+.mdxeditor select option {
+  background-color: var(--popover) !important;
+  color: var(--popover-foreground) !important;
+}
+
+/* Dark theme: Radix dropdown content is portaled to <body>, outside
+   `.mdxeditor`, so it loses the `.mdxeditor` variable scope and falls back
+   to the package light tokens (white-on-white = invisible text). These
+   selectors intentionally do NOT require a `.mdxeditor` ancestor. */
+.dark [class*="_toolbarNodeKindSelectTrigger_"],
+.dark [class*="_toolbarButtonSelectTrigger_"],
+.dark [class*="_selectTrigger_"],
+.dark [class*="_toolbarCodeBlockLanguageSelectTrigger_"] {
+  background-color: var(--card) !important;
+  color: var(--card-foreground) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.dark [class*="_selectTrigger_"][data-placeholder] > span:first-child {
+  color: var(--muted-foreground) !important;
+}
+
+.dark [class*="_toolbarNodeKindSelectContainer_"],
+.dark [class*="_toolbarButtonDropdownContainer_"],
+.dark [class*="_toolbarCodeBlockLanguageSelectContent_"],
+.dark [class*="_selectContainer_"] {
+  background-color: var(--popover) !important;
+  color: var(--popover-foreground) !important;
+  border: 1px solid var(--border) !important;
+}
+
+.dark [class*="_toolbarNodeKindSelectItem_"],
+.dark [class*="_selectItem_"] {
+  color: var(--popover-foreground) !important;
+}
+
+.dark [class*="_toolbarNodeKindSelectItem_"][data-highlighted],
+.dark [class*="_selectItem_"][data-highlighted],
+.dark [class*="_toolbarNodeKindSelectItem_"][data-state="checked"],
+.dark [class*="_selectItem_"][data-state="checked"] {
+  background-color: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+  outline: none !important;
+}
+
+.dark select option {
+  background-color: var(--popover) !important;
+  color: var(--popover-foreground) !important;
+}
+
+/* Light theme: explicit surface so CodeMirror never inherits stray dark tokens */
+.mdxeditor .cm-editor,
+.mdxeditor .cm-scroller,
+.mdxeditor .cm-content {
+  background-color: var(--card);
+  color: var(--foreground);
+}
+
+.mdxeditor .cm-gutters {
+  background-color: var(--card);
+  color: var(--muted-foreground);
+  border-right: 1px solid var(--border);
+}
+
+/* Dark theme: kill the white CodeMirror defaults */
+.dark .mdxeditor .cm-editor,
+.dark .mdxeditor .cm-scroller,
+.dark .mdxeditor .cm-content {
+  background-color: var(--card) !important;
   color: var(--card-foreground) !important;
 }
 
-/* MDXEditor contenteditable area: ensure text is visible in dark mode */
+.dark .mdxeditor .cm-gutters,
+.dark .mdxeditor .cm-gutter {
+  background-color: var(--card) !important;
+  color: var(--muted-foreground) !important;
+  border-right: 1px solid var(--border) !important;
+}
+
+.dark .mdxeditor .cm-lineNumbers .cm-gutterElement {
+  color: var(--muted-foreground) !important;
+}
+
+.dark .mdxeditor .cm-activeLine,
+.dark .mdxeditor .cm-activeLineGutter {
+  background-color: var(--muted) !important;
+}
+
+.dark .mdxeditor .cm-content::selection,
+.dark .mdxeditor .cm-selectionBackground,
+.dark .mdxeditor .cm-focused .cm-selectionBackground {
+  background-color: var(--accent) !important;
+}
+
+.dark .mdxeditor .cm-cursor {
+  border-left-color: var(--foreground) !important;
+}
+
+/* Dark theme syntax tokens (CodeMirror 6 / Lezer). Without these,
+   light-oriented token colors become unreadable on the dark surface. */
+.dark .mdxeditor .tok-comment,
+.dark .mdxeditor .cm-comment {
+  color: var(--muted-foreground) !important;
+}
+
+.dark .mdxeditor .tok-keyword,
+.dark .mdxeditor .cm-keyword,
+.dark .mdxeditor .tok-controlKeyword,
+.dark .mdxeditor .tok-operatorKeyword {
+  color: var(--primary) !important;
+}
+
+.dark .mdxeditor .tok-string,
+.dark .mdxeditor .cm-string {
+  color: var(--chart-4) !important;
+}
+
+.dark .mdxeditor .tok-number,
+.dark .mdxeditor .cm-number {
+  color: var(--chart-5) !important;
+}
+
+.dark .mdxeditor .tok-function,
+.dark .mdxeditor .tok-functionName,
+.dark .mdxeditor .cm-def,
+.dark .mdxeditor .cm-variable-2 {
+  color: var(--chart-3) !important;
+}
+
+.dark .mdxeditor .tok-variableName,
+.dark .mdxeditor .tok-propertyName,
+.dark .mdxeditor .tok-typeName,
+.dark .mdxeditor .tok-className,
+.dark .mdxeditor .cm-variable,
+.dark .mdxeditor .cm-property,
+.dark .mdxeditor .cm-type {
+  color: var(--card-foreground) !important;
+}
+
+.dark .mdxeditor .tok-operator,
+.dark .mdxeditor .tok-punctuation,
+.dark .mdxeditor .cm-operator,
+.dark .mdxeditor .cm-punctuation {
+  color: var(--muted-foreground) !important;
+}
+
+/* MDXEditor contenteditable area: ensure text is visible in both themes */
 .mdxeditor-contenteditable {
   color: var(--foreground) !important;
   background-color: var(--background) !important;
@@ -265,3 +463,31 @@
   background-color: transparent !important;
   line-height: 1 !important;
 }
+
+/* Toolbar icons and editor UI controls should always inherit readable foreground */
+.mdxeditor svg,
+.mdxeditor button,
+.mdxeditor [role="button"] {
+  color: var(--foreground) !important;
+}
+
+.mdxeditor button:hover,
+.mdxeditor [role="button"]:hover {
+  background-color: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+}
+
+/* The base `svg` rule below uses !important, so the hover color must
+   target the svg directly or it keeps the non-hover icon color. */
+.mdxeditor button:hover svg,
+.mdxeditor [role="button"]:hover svg {
+  color: var(--secondary-foreground) !important;
+}
+
+.mdxeditor .mdxeditor-toolbar,
+.mdxeditor .mdxeditor-popup {
+  background: var(--card) !important;
+  color: var(--card-foreground) !important;
+  border-color: var(--border) !important;
+}
+
