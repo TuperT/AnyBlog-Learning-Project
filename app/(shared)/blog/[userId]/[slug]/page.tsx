@@ -30,7 +30,7 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
             comments: {
                 select: {
                     comment: true,
-                    createAt: true,
+                    createdAt: true,
                     author: true
                 },
             }
@@ -107,7 +107,7 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
                                 authorName={comment.author.name}
                                 authorProfilePicture={comment.author.profilePicture?.toString() ?? "./default-avatar.png"}
                                 comment={comment.comment}
-                                date={comment.createAt}
+                                date={comment.createdAt}
                                 />
                             ))
                             }
