@@ -78,7 +78,7 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
                                 {post?.author?.name}
                                 <br />
                                 <p className="text-muted-foreground font-normal">
-                                    {formatDate(post?.createAt ?? "")}
+                                    {formatDate(post?.createdAt ?? "")}
                                 </p>
                             </span>
                         </span>
