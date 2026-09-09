@@ -27,14 +27,14 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
                     profilePicture: true,
                 },
             },
-            comment: {
+            comments: {
                 select: {
                     comment: true,
                     createAt: true,
                     author: true
                 },
             }
-        }
+        },
     })
 
     if (!post) return;
@@ -97,11 +97,11 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
                 <Separator className="mb-2" />
                 <BlogCommentForm postId={post?.id ?? ""} />
                 {
-                    post?.comment.length >= 1
+                    post?.comments.length >= 1
                     ? (
                         <article className="flex flex-col gap-4 mt-2">
                             {
-                            post?.comment?.map((comment, key) => (
+                            post?.comments?.map((comment, key) => (
                                 <BlogCommentCard
                                 key={key}
                                 authorName={comment.author.name}
@@ -126,6 +126,8 @@ const page = async ({ params }: { params: Promise<{ userId:string, slug: string 
                         </Empty>
                     )
                 }
+
+
             </aside>
         </section>
     )

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ui/theme-provider";
@@ -19,6 +19,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-jakarta-sans",
+  subsets: ["latin"],
+})
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"]
+})
+
 export const metadata: Metadata = {
   title: "AnyBlog",
   description: "Place to share anything as a blog",
@@ -32,7 +42,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", geist.variable)}
+      className={cn("h-full", "antialiased",plusJakartaSans.variable, inter.variable ,geistSans.variable, geistMono.variable, "font-sans", geist.variable)}
       suppressHydrationWarning
     >
       <Analytics />
@@ -45,7 +55,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Toaster richColors />
-          <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col px-4 sm:px-6 lg:px-8">
+          <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col px-4 sm:px-8 lg:px-12">
             {children}
           </main>
         </ThemeProvider>

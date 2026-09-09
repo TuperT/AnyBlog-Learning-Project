@@ -1,4 +1,4 @@
-import { BlogCard } from "@/components/blog/BlogCard"
+import BlogCard from "@/components/blog/BlogCard"
 import { BlogCardSkeleton } from "@/components/blog/BlogCardSkeleton"
 import BlogSearch from "@/components/blog/BlogSearch"
 import ProfileBannerMenu from "@/components/profile/ProfileBannerMenu"
@@ -31,19 +31,19 @@ const Page = async ({ params, searchParams }
             profilePicture: true,
             bannerPicture: true,
             role: true,
-            createAt: true,
+            createdAt: true,
             post: {
                 orderBy: {
-                    createAt: "desc"
+                    createdAt: "desc"
                 }
             },
         }
     })
 
-    const filteredPosts = 
-    user?.post 
-    ? user?.post.filter(post => post.title.toLowerCase().includes(search?.search?.toLowerCase() ?? "")) 
-    : user?.post
+    // const filteredPosts = 
+    // user?.post 
+    // ? user?.post.filter(post => post.title.toLowerCase().includes(search?.search?.toLowerCase() ?? "")) 
+    // : user?.post
     
 
     if (!user) redirect("/")
@@ -88,7 +88,7 @@ const Page = async ({ params, searchParams }
                             </span>
 
                             <p className="text-sm text-muted-foreground">
-                                Member since {new Date(user.createAt).toLocaleDateString("id-ID", {
+                                Member since {new Date(user.createdAt).toLocaleDateString("id-ID", {
                                     day: "numeric",
                                     month: "long",
                                     year: "numeric",
@@ -138,22 +138,23 @@ const Page = async ({ params, searchParams }
                         </EmptyHeader>
                     </Empty>
                 ) : (
-                    <div className="mt-3 grid grid-cols-1 gap-8 sm:grid-cols-2">
+                    <div className="mt-3 grid grid-cols-1 gap-8">
                         {
                             <Suspense fallback={<BlogCardSkeleton />}>
                                 {
-                                filteredPosts?.map((post) => (
+                                user.post?.map((post) => (
                                     <BlogCard
                                         id={post.id}
                                         key={post.id}
                                         title={post.title}
                                         image={post.image}
                                         description={post.description}
+                                        contentLength={post.content.length}
                                         slug={post.slug}
                                         author={user.name}
                                         authorId={post.authorId}
                                         authorImage={user.profilePicture ?? ""}
-                                        createdAt={post.createAt}
+                                        createdAt={post.createdAt}
                                         updatedAt={post.updatedAt}
                                     />
                                 ))

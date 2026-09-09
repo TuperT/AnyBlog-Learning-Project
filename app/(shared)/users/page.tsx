@@ -2,6 +2,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { buttonVariants } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { prisma } from "@/lib/db"
 import { Shield, UserRound } from "lucide-react"
 import Link from "next/link"
@@ -18,7 +19,8 @@ const page = async () => {
 
     return (
         <main className="mt-5 grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-8 xl:grid-cols-4">
-            {users.map((user) => (
+            {
+            users.length > 0 ? ( users.map((user) => (
                 <Card key={user.id} className="p-2">
                     <span className="flex items-center justify-between gap-2">
                         <span className="flex min-w-0 flex-row items-center gap-2">
@@ -48,7 +50,25 @@ const page = async () => {
                         </Link>
                     </span>
                 </Card>
-            ))}
+            ))
+            ) : (
+            <Empty className="min-h-[85vh] min-w-[85vw] flex items-center justify-center">
+                <EmptyHeader>
+                    <EmptyMedia variant="icon">
+                        <UserRound />
+                    </EmptyMedia>
+
+                    <EmptyTitle>
+                        There are no creator yet
+                    </EmptyTitle>
+
+                    <EmptyDescription>
+                        Seem`s kinda lonely here
+                    </EmptyDescription>
+                </EmptyHeader>
+            </Empty>
+            )
+            }
         </main>
     )
 }

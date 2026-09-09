@@ -1,94 +1,71 @@
-import { BlogCard } from "@/components/blog/BlogCard";
-import { BlogCardSkeleton } from "@/components/blog/BlogCardSkeleton";
-import BlogSearch from "@/components/blog/BlogSearch";
+import PostFeed from "@/components/post/PostFeed";
 import { buttonVariants } from "@/components/ui/button";
-import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty";
 import { prisma } from "@/lib/db";
-import { FileText, PenBox } from "lucide-react";
+import {  PenBox } from "lucide-react";
 import Link from "next/link";
-import { Suspense } from "react";
 
-export default async function Home({ searchParams }: { searchParams: Promise<{ search?: string }> }) {
-  const param = await searchParams
+export default async function Home(
+  { searchParams }: 
+  { searchParams: Promise<{ search?: string, skip?: string }> }
+  ) {
+  const params = await searchParams
 
-  const posts = await prisma.post.findMany({
+  const param = new URLSearchParams({
+    search: params.search ?? "",
+    skip: String(params.skip) ?? 0,
+    take: "10"
+  })
+
+  const initialPosts = await prisma.post.findMany({
     include: {
       author: {
         select: {
           id: true,
           name: true,
           profilePicture: true
-        },
+        }
       },
     },
     orderBy: {
-      createAt: "desc",
+      createdAt: "desc"
     },
-  });
+    skip: Number.isFinite(Number(param.get("skip"))) ? Number(param.get("skip")) : 0,
+    take: Number(param.get("take"))
+  })
 
-  const filteredPosts = 
-  posts 
-  ? posts.filter(post => post.title.toLowerCase().includes(param?.search?.toLowerCase() ?? "")) 
-  : posts
+  // TODO Implement search feature
+  // const filteredPosts = 
+  // posts 
+  // ? posts.filter(post => post.title.toLowerCase().includes(param?.search?.toLowerCase() ?? "")) 
+  // : posts
 
   return (
-    <div className="mt-12 px-4 sm:px-6 lg:px-0 xl:px-8">
-      <div className="flex items-center justify-between">
-        <h1 className="font-bold text-xl md:text-2xl lg:text-3xl">Blogs</h1>
-        <span className="w-sm">
-          <BlogSearch />
-        </span>
-      </div>
+    <div className="mt-12 md:mx-20 lg:mx-40 px-4 sm:px-6 lg:px-0 xl:px-8">
+      <header className="flex flex-col gap-2">
+        <p className="flex flex-row items-center gap-2 rounded-full py-2 px-4 bg-secondary w-fit text-[2vw] md:text-xs text-secondary-foreground font-semibold font-inter">
+          <span className="size-2 bg-primary rounded-full"></span>
+          Community Stories
+        </p>
 
-      <div className={`mt-5 grid ${posts.length ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" : "place-items-center"} gap-8`}>
-        {posts.length != 0 ? (
-          <Suspense fallback={<BlogCardSkeleton />}>
-            {
-              filteredPosts.map((post) => (
-                <BlogCard
-                  key={post.id}
-                  id={post.id}
-                  title={post.title}
-                  image={post.image}
-                  description={post.description}
-                  slug={post.slug}
-                  authorId={post.authorId}
-                  author={post.author?.name ?? "Unknown"}
-                  authorImage={post.author.profilePicture ?? ""}
-                  createdAt={post.createAt}
-                  updatedAt={post.updatedAt}
-                />
-              ))
-            }
-          </Suspense>
-        ) : (
-          <Empty>
-            <EmptyHeader>
-              <EmptyMedia variant="icon">
-                <FileText />
-              </EmptyMedia>
+        <h1 className="font-jakarta font-bold text-xl sm:text-2xl md:text-3xl">
+          Read what the community is <br /> sharing
+        </h1>
 
-              <EmptyTitle>
-                There are no blog yet
-              </EmptyTitle>
+        <div className="flex flex-row justify-between gap-4">
+          <p className="text-muted-foreground font-inter text-[2.4vw] md:text-sm">
+            Insightful essays, design thinking, and technical perspectives from authors worldwide.
+          </p>
 
-              <EmptyDescription>
-                Someone hasn`t create a blog
-              </EmptyDescription>
-            </EmptyHeader>
+          <Link 
+          href="/create"
+          className={buttonVariants({ variant: "default", size: "lg" })}
+          >
+            <PenBox /> Create Blog
+          </Link>
+        </div>
+      </header>
 
-            <EmptyContent>
-              <Link
-              href="/create"
-              className={buttonVariants({ variant: "default" })}
-              >
-                <PenBox />
-                Let`s create it
-              </Link>
-            </EmptyContent>
-          </Empty>
-        )}
-      </div>
+      <PostFeed initialPosts={initialPosts} />
     </div>
   );
 }

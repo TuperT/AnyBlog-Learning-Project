@@ -16,7 +16,6 @@ enum userRole {
   ADMIN
   USER
 }
-
 model User {
   id             String   @id @default(uuid())
   profilePicture String?  @default("/default-avatar.png")
@@ -27,11 +26,12 @@ model User {
   role           userRole @default(USER)
   post           Post[]
   comment        PostComment[]
-  createAt       DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Post {
-  id          String   @id @default(cuid())
+  id          String   @id @default(cuid()) 
   image       String
   title       String
   slug        String
@@ -40,8 +40,9 @@ model Post {
   published   Boolean  @default(false)
   author      User     @relation(fields: [authorId], references: [id])
   authorId    String
-  comment     PostComment[]
-  createAt    DateTime @default(now())
+  comments    PostComment[]
+  categories  PostCategory[]
+  createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
 
@@ -52,5 +53,13 @@ model PostComment {
   post      Post     @relation(fields: [postId], references: [id])
   postId    String
   comment   String
-  createAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PostCategory {
+  id    String @id @default(cuid())
+  name  String
+  color String
+  post  Post[]
 }

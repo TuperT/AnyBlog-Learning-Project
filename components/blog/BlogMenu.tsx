@@ -57,7 +57,7 @@ const BlogMenu =  async ({ postId }: blogMenuProps) => {
             admin && (
                 <DropdownMenu>
                     <DropdownMenuTrigger
-                    className="absolute z-10 p-2 right-2 mt-2 rounded-2xl border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input"
+                    className="p-2 rounded-2xl border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input"
                     >
                         <CircleEllipsisIcon className="size-4" />
                     </DropdownMenuTrigger>

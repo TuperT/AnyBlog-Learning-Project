@@ -4,7 +4,7 @@ import { LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 
 export function LogoutMenuItem() {
-    const handleDelete = async () => {
+    const handleLogout = async () => {
         await fetch("/api/auth/logout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -14,9 +14,8 @@ export function LogoutMenuItem() {
     };
 
     return (
-        <Button onClick={handleDelete} variant="destructive">
-            <LogOut />
-            Logout
+        <Button variant="destructive" onClick={handleLogout}>
+            <LogOut /> Logout
         </Button>
     );
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { Field, FieldContent, FieldDescription, FieldError, FieldGroup } from '../ui/field'
+import { Field, FieldContent, FieldError, FieldGroup } from '../ui/field'
 import { Textarea } from '../ui/textarea'
 import { Button } from '../ui/button'
 import { SendHorizonal } from 'lucide-react'
@@ -47,6 +47,7 @@ const BlogCommentForm = ({ postId }: blogCommentFormProps) => {
         if (!res.ok) return toast.error(result.message || "Failed to send comment")
         
         toast.success("Comment posted")
+        router.refresh()
     }
 
     return (

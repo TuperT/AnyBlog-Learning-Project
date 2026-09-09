@@ -48,6 +48,8 @@ export const POST = async (request: NextRequest) => {
             },
         });
 
+        if (!user) return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+
         const token = generateToken({
             userId: user.id,
             name: user.name,

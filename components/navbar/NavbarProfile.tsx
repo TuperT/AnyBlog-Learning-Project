@@ -1,23 +1,16 @@
-import jwt, { type JwtPayload } from "jsonwebtoken"
 import { prisma } from "@/lib/db"
-import { cookies } from "next/headers"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuGroup } from "../ui/dropdown-menu"
+import { ChevronDown, UserRound } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { UserRound } from "lucide-react"
 import { LogoutMenuItem } from "./LogoutMenuItem"
 import Link from "next/link"
 import { buttonVariants } from "../ui/button"
-
-type NavJwtPayload = {
-    userId: string
-    name?: string
-    profilePicture?: string | null
-}
+import { getToken } from "@/lib/auth"
 
 const NavbarProfile = async () => {
-    const token = (await cookies()).get("jwt")
+    const decoded = await getToken()
 
-    if (!token) {
+    if (!decoded) {
         return (
             <div className="flex items-center gap-2">
                 <Link href="/auth/signup" className={buttonVariants()}>
@@ -34,88 +27,10 @@ const NavbarProfile = async () => {
             </div>
         )
     }
-    if (!process.env.JWT_SECRET) return null
-
-    let decoded: string | JwtPayload
-    try {
-        decoded = jwt.verify(token.value, process.env.JWT_SECRET)
-    } catch {
-        return (
-            <div className="flex items-center gap-2">
-                <Link href="/auth/signup" className={buttonVariants()}>
-                    Sign Up
-                </Link>
-                <Link
-                    href="/auth/login"
-                    className={buttonVariants({
-                    variant: "outline",
-                    })}
-                >
-                    Login
-                </Link>
-            </div>
-        )
-    }
-
-    if (typeof decoded === "string") {
-        return (
-            <div className="flex items-center gap-2">
-                <Link href="/auth/signup" className={buttonVariants()}>
-                    Sign Up
-                </Link>
-                <Link
-                    href="/auth/login"
-                    className={buttonVariants({
-                    variant: "outline",
-                    })}
-                >
-                    Login
-                </Link>
-            </div>
-        )
-    }
-
-    if (!decoded || typeof decoded !== "object") {
-        return (
-            <div className="flex items-center gap-2">
-                <Link href="/auth/signup" className={buttonVariants()}>
-                    Sign Up
-                </Link>
-                <Link
-                    href="/auth/login"
-                    className={buttonVariants({
-                    variant: "outline",
-                    })}
-                >
-                    Login
-                </Link>
-            </div>
-        )
-    }
-    
-    if (!("userId" in decoded) || typeof decoded.userId !== "string") {
-        return (
-            <div className="flex items-center gap-2">
-                <Link href="/auth/signup" className={buttonVariants()}>
-                    Sign Up
-                </Link>
-                <Link
-                    href="/auth/login"
-                    className={buttonVariants({
-                    variant: "outline",
-                    })}
-                >
-                    Login
-                </Link>
-            </div>
-        )
-    }
-
-    const payload = decoded as NavJwtPayload
 
     const user = await prisma.user.findUnique({
-        where: {
-            id: payload.userId,
+        where: {    
+            id: decoded.userId,
         },
         select: {
             id: true,
@@ -129,9 +44,7 @@ const NavbarProfile = async () => {
         {user && (
             <DropdownMenu>
                 <DropdownMenuTrigger>
-                    <span className="flex items-center gap-2 px-2 hover:bg-accent rounded-xl ">
-                        <span className="hidden sm:inline font-semibold text-sm">{user.name}</span>
-
+                    <span className="flex items-center gap-2 px-2 rounded-xl ">
                         <Avatar>
                             <AvatarImage
                             src={user.profilePicture || "/default-avatar.png"}
@@ -142,21 +55,28 @@ const NavbarProfile = async () => {
                                 {user.name.charAt(0)}
                             </AvatarFallback>
                         </Avatar>
+
+                        <span className="hidden sm:flex sm:flex-row sm:items-center sm:gap font-semibold text-sm">
+                            {user.name} <ChevronDown size={16} />
+                        </span>
                     </span>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent className="flex flex-col items-center justify-center">
-                    <DropdownMenuItem>
-                        <Link
-                        href={`/profile/${user.id}`}
-                        className={buttonVariants({ variant: "ghost" })}
-                        >
+                <DropdownMenuContent>
+                    <DropdownMenuGroup className="flex flex-col">
+                        <DropdownMenuItem render={
+                            <Link
+                                className={buttonVariants({ variant: "ghost" })}
+                                href={`/profile/${user.id}`}
+                            >
+                                <UserRound /> Profile
+                            </Link>
+                        }>
                             <UserRound /> Profile
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
+                        </DropdownMenuItem>
+
                         <LogoutMenuItem />
-                    </DropdownMenuItem>
+                    </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
         )}
