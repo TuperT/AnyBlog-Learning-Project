@@ -10,14 +10,23 @@ const CheckTokenAndReturn = async ({ successChildren, failedChildren }: checkTok
     const token = (await cookies()).get("jwt")?.value
 
     if (!token) {
-        return <>{failedChildren}</>
+        return <>{failedChildren ?? null}</>
     }
 
-    if (!process.env.JWT_SECRET) return null
+    if (!process.env.JWT_SECRET) {
+        return <>{failedChildren ?? null}</>
+    }
 
-    if (!jwt.verify(token, process.env.JWT_SECRET)) return <>{successChildren}</>
+    let tokenIsValid = false
 
-    return <>{failedChildren}</>
+    try {
+        jwt.verify(token, process.env.JWT_SECRET)
+        tokenIsValid = true
+    } catch {
+        tokenIsValid = false
+    }
+
+    return tokenIsValid ? <>{successChildren}</> : <>{failedChildren ?? null}</>
 }
 
 export default CheckTokenAndReturn
