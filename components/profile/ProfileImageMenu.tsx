@@ -1,5 +1,3 @@
-"use server"
-
 import { Pencil } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import DeleteProfileImage from "./DeleteProfileImage"
@@ -7,7 +5,7 @@ import ChangeProfileImage from "./ChangeProfileImage"
 import { prisma } from "@/lib/db"
 import jwt from "jsonwebtoken"
 import { cookies } from "next/headers"
-import type { jwtPayload } from "../blog/BlogMenu"
+import type { JwtPayload } from "@/types/auth"
 
 type profileMenuProps = {
     pageIdParam: string
@@ -23,7 +21,7 @@ const ProfileImageMenu = async ({ pageIdParam }: profileMenuProps) => {
 
     if(!decoded) return;
 
-    const payload = decoded as jwtPayload
+    const payload = decoded as JwtPayload
 
     const user = await prisma.user.findUnique({
         where: {

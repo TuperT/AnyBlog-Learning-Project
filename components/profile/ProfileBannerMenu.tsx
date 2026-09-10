@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { prisma } from "@/lib/db"
 import jwt from "jsonwebtoken"
 import { cookies } from "next/headers"
-import type { jwtPayload } from "../blog/BlogMenu"
+import type { JwtPayload } from "@/types/auth"
 import ChangeBannerImage from "./ChangeBannerImage"
 import DeleteBannerImage from "./DeleteBannerImage"
 
@@ -23,7 +23,7 @@ const ProfileBannerMenu = async ({ pageIdParam }: profileBannerMenuProps) => {
 
     if(!decoded) return;
 
-    const payload = decoded as jwtPayload
+    const payload = decoded as JwtPayload
 
     const user = await prisma.user.findUnique({
         where: {

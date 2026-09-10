@@ -1,9 +1,9 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '../ui/dropdown-menu'
 import { CircleEllipsisIcon, PenBox } from 'lucide-react'
 import { DeleteBlogMenuItem } from './DeleteBlogMenuItem'
-import jwt from "jsonwebtoken"
-import { cookies } from 'next/headers'
-import { prisma } from '@/lib/db'
 import Link from 'next/link'
 import { Button } from '../ui/button'
 
@@ -11,71 +11,67 @@ type blogMenuProps = {
     postId: string
 }
 
-export type jwtPayload = {
-    userId: string,
+type CheckUserData = {
+    success: boolean;
+    post: { slug: string; authorId: string } | null;
+    isAdmin: boolean;
+    userId: string;
 }
 
-const BlogMenu =  async ({ postId }: blogMenuProps) => {
-    const token = (await cookies()).get("jwt")
+const BlogMenu = ({ postId }: blogMenuProps) => {
+    const [data, setData] = useState<CheckUserData | null>(null);
 
-    if(!token) return;
-    if(!process.env.JWT_SECRET) return;
+    useEffect(() => {
+        let cancelled = false;
 
-    const decoded = jwt.verify(token.value, process.env.JWT_SECRET)
+        const checkUser = async () => {
+            try {
+                const res = await fetch("/api/user/check-user", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ postId }),
+                });
 
-    if(!decoded) return;
+                if (!res.ok) return;
 
-    const payload = decoded as jwtPayload
+                const json = await res.json();
 
-    const user = await prisma.user.findUnique({
-        where: {
-            id: payload.userId
-        },
-        select: {
-            role: true,
-            id: true
-        }
-    })
+                if (!cancelled) setData(json);
+            } catch {
+                return;
+            }
+        };
 
-    if(!user) return;
+        checkUser();
 
-    const post = await prisma.post.findUnique({
-        where: {
-            id: postId,
-            authorId: user.id
-        },
-        select: {
-            slug: true
-        }
-    })
+        return () => { cancelled = true; };
+    }, [postId]);
 
-    const admin = user?.role === "ADMIN"
+    if (!data || !data.post) return null;
+
+    const canManage = data.isAdmin || data.post.authorId === data.userId;
+
+    if (!canManage) return null;
 
     return (
-        <>
-        {
-            admin && (
-                <DropdownMenu>
-                    <DropdownMenuTrigger
-                    className="p-2 rounded-2xl border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input"
-                    >
-                        <CircleEllipsisIcon className="size-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                    side="bottom"
-                    align="end"
-                    className="w-full flex items-start justify-center flex-col gap-2"
-                    >
-                        <Link href={`/edit/${user.id}/${post?.slug}`}>
-                            <Button variant="ghost"><PenBox /> Edit Post</Button>
-                        </Link>
+        <DropdownMenu>
+            <DropdownMenuTrigger
+            className="p-2 rounded-2xl border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input"
+            >
+                <CircleEllipsisIcon className="size-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+            side="bottom"
+            align="end"
+            className="w-full flex items-start justify-center flex-col gap-2"
+            >
+                <Link href={`/edit/${data.userId}/${data.post.slug}`}>
+                    <Button variant="ghost"><PenBox /> Edit Post</Button>
+                </Link>
 
-                        <DeleteBlogMenuItem id={postId} />
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            )
-        }
-        </>
+                <DeleteBlogMenuItem id={postId} />
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }
 

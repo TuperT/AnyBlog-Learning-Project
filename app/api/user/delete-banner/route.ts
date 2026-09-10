@@ -43,6 +43,6 @@ export const PUT = async (request: NextRequest) => {
         return NextResponse.json({ success: true })
     } catch (error) {
         console.error(error);
-        return NextResponse.json("Internal server error", { status: 500 });
+        return NextResponse.json({ message: "Internal server error" }, { status: 500 });
     }
 }
