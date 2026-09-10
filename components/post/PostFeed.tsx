@@ -43,29 +43,41 @@ type PostFeedProps = {
 const PostFeed = ({ initialPosts }: PostFeedProps) => {
     const [posts, setPosts] = useState(initialPosts);
     const [skip, setSkip] = useState(initialPosts.length);
-    const [isNewPostsAvailable, setIsNewPostsAvailable] = useState(false)
+    const [newPostAvailable, setNewPostAvailable] = useState(true)
     const loadingRef = useRef<boolean>(false)
     const loaderRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
+        let cancelled = false;
+
+        const checkAvailability = async () => {
+            try {
+                const res = await fetch(`/api/blog/get-post?skip=${skip}&take=10`);
+                if (!res.ok) {
+                    if (!cancelled) setNewPostAvailable(false);
+                    return;
+                }
+                const nextPosts = await res.json();
+                if (!cancelled) setNewPostAvailable(nextPosts.length > 0);
+            } catch {
+                if (!cancelled) setNewPostAvailable(false);
+            }
+        };
+
+        checkAvailability();
+
         const observer = new IntersectionObserver(async ([entry]) => {
-            if (!entry.isIntersecting || loadingRef.current) return;
+            if (!entry.isIntersecting || loadingRef.current || !newPostAvailable) return;
 
             loadingRef.current = true
 
             try {
-                const response = await fetch(`/api/blog?skip=${skip}&take=10`); 
-                const newPosts: [] = await response.json();
+                const response = await fetch(`/api/blog/get-post?skip=${skip}&take=10`);
+                if (!response.ok) return;
+                const newPosts: PostFeedPropsAuthor[] = await response.json();
 
                 setPosts((currentposts) => [...currentposts, ...newPosts])
                 setSkip((currentSkips) => currentSkips + newPosts.length)
-
-                const nextNewPost = await (await fetch(`/api/blog?skip=${skip + 10}&take=10`)).json()
-
-                if (nextNewPost) setIsNewPostsAvailable(true)
-
-            } catch {
-                setIsNewPostsAvailable(false)
             }
             finally {
                 loadingRef.current = false
@@ -74,8 +86,11 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
 
         if (loaderRef.current) observer.observe(loaderRef.current)
 
-        return () => observer.disconnect()
-    }, [skip, isNewPostsAvailable])
+        return () => {
+            cancelled = true;
+            observer.disconnect();
+        }
+    }, [skip, newPostAvailable])
 
     return (
         <>
@@ -120,11 +135,9 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
             )}
         </div>
 
-        <div className="flex items-center justify-center">
+        <div ref={loaderRef} className="flex h-10 items-center justify-center">
             {
-            loadingRef && isNewPostsAvailable 
-            ? <LoaderCircle size={32} className="animate-spin" />
-            : ""
+            loadingRef && newPostAvailable && <LoaderCircle size={32} className="animate-spin" />
             }
         </div>
         </>

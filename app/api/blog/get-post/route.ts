@@ -20,6 +20,22 @@ export const GET = async (request: NextRequest) => {
                     ],
                 }
                 : undefined,
+            include: {
+                author: {
+                    select: {
+                        id: true,
+                        name: true,
+                        profilePicture: true,
+                    },
+                },
+                categories: {
+                    select: {
+                        id: true,
+                        name: true,
+                        color: true,
+                    },
+                },
+            },
             orderBy: {
                 createdAt: "desc",
             },
