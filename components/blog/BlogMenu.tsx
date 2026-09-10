@@ -56,7 +56,7 @@ const BlogMenu = ({ postId }: blogMenuProps) => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
-            className="p-2 rounded-2xl border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input"
+            className="p-2 rounded-full border-border bg-background md:bg-none hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input"
             >
                 <EllipsisVertical className="size-4" />
             </DropdownMenuTrigger>

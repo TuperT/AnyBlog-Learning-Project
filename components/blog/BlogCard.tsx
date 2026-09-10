@@ -46,13 +46,14 @@ const BlogCard = ({
     const shortDate = new Date(createdAt).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
+        year: "numeric"
     });
     const [primaryCategory] = categories.slice(0,2);
 
     return (
-        <div className="relative grid w-full h-full grid-cols-1 md:grid-cols-[0.8fr_1fr] md:grid-rows-[auto_1fr] md:gap-x-2 overflow-hidden rounded-3xl md:rounded-xl border border-transparent md:border-border bg-secondary/60 md:bg-card p-3 md:p-0 shadow-card-shadow transition-all duration-250 hover:shadow-card-shadow-hover hover:-translate-y-0.5">
+        <div className="relative grid w-full h-full grid-cols-1 md:grid-cols-[0.8fr_1fr] md:grid-rows-[auto_1fr] md:gap-x-2 overflow-hidden rounded-3xl md:rounded-xl border border-transparent md:border-border md:bg-card p-3 md:p-0 shadow-card-shadow transition-all duration-250 hover:shadow-card-shadow-hover hover:-translate-y-0.5">
             {/* Pills + menu row */}
-            <div className="flex items-center justify-between gap-2 pb-3 md:col-start-2 md:row-start-1 md:px-4 md:pt-4 md:pb-0">
+            <div className="absolute right-5 top-5 z-10 md:static md:right-0 md:top-0 md:z-0 flex items-center justify-between gap-2 pb-3 md:col-start-2 md:row-start-1 md:px-4 md:pt-4 md:pb-0">
                 <div className="flex min-w-0 flex-wrap items-center gap-2">
                     {primaryCategory && (
                         <Badge
@@ -72,12 +73,13 @@ const BlogCard = ({
                         </Badge>
                     )}
                 </div>
+
                 <BlogMenu postId={id} />
             </div>
 
             {/* Cover image */}
             <div className="md:col-start-1 md:row-start-1 md:row-span-2">
-                <div className="relative aspect-16/1- sm:aspect-auto sm:min-h-56 lg:min-h-64 xl:min-h-72 w-full overflow-hidden rounded-2xl md:rounded-none">
+                <div className="relative aspect-16/10 sm:aspect-auto sm:min-h-56 lg:min-h-64 xl:min-h-72 w-full overflow-hidden rounded-2xl md:rounded-none">
                     <Image
                         src={image}
                         alt="blog-image"
@@ -108,7 +110,7 @@ const BlogCard = ({
                             </AvatarFallback>
                         </Avatar>
 
-                        <div className="flex min-w-0 flex-col leading-tight">
+                        <div className="flex min-w-0 flex-col md:flex-row md:items-center md:gap-2 leading-tight">
                             <p className="min-w-0 font-semibold font-jakarta truncate text-xs sm:text-sm">
                                 {author}
                             </p>
