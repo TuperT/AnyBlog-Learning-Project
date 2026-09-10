@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '../ui/dropdown-menu'
-import { CircleEllipsisIcon, PenBox } from 'lucide-react'
+import { EllipsisVertical, PenBox } from 'lucide-react'
 import { DeleteBlogMenuItem } from './DeleteBlogMenuItem'
 import Link from 'next/link'
-import { Button } from '../ui/button'
+import { buttonVariants } from '../ui/button'
 
 type blogMenuProps = {
     postId: string
@@ -58,15 +58,15 @@ const BlogMenu = ({ postId }: blogMenuProps) => {
             <DropdownMenuTrigger
             className="p-2 rounded-2xl border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input"
             >
-                <CircleEllipsisIcon className="size-4" />
+                <EllipsisVertical className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent
             side="bottom"
             align="end"
             className="w-full flex items-start justify-center flex-col gap-2"
             >
-                <Link href={`/edit/${data.userId}/${data.post.slug}`}>
-                    <Button variant="ghost"><PenBox /> Edit Post</Button>
+                <Link className={buttonVariants({ variant: "ghost" })} href={`/edit/${data.userId}/${data.post.slug}`}>
+                    <PenBox /> Edit Post
                 </Link>
 
                 <DeleteBlogMenuItem id={postId} />

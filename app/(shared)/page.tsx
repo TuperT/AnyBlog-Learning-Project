@@ -25,6 +25,13 @@ export default async function Home(
           profilePicture: true
         }
       },
+      categories: {
+        select: {
+          id: true,
+          name: true,
+          color: true
+        }
+      },
     },
     orderBy: {
       createdAt: "desc"

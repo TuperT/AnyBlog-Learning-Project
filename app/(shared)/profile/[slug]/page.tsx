@@ -35,6 +35,15 @@ const Page = async ({ params, searchParams }
             post: {
                 orderBy: {
                     createdAt: "desc"
+                },
+                include: {
+                    categories: {
+                        select: {
+                            id: true,
+                            name: true,
+                            color: true
+                        }
+                    }
                 }
             },
         }
@@ -156,6 +165,7 @@ const Page = async ({ params, searchParams }
                                         authorImage={user.profilePicture ?? ""}
                                         createdAt={post.createdAt}
                                         updatedAt={post.updatedAt}
+                                        categories={post.categories ?? []}
                                     />
                                 ))
                                 }
