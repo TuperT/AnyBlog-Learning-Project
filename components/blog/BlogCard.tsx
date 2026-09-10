@@ -47,7 +47,7 @@ const BlogCard = ({
         month: "short",
         day: "numeric",
     });
-    const [primaryCategory] = categories;
+    const [primaryCategory] = categories.slice(0,2);
 
     return (
         <div className="relative grid w-full h-full grid-cols-1 md:grid-cols-[0.8fr_1fr] md:grid-rows-[auto_1fr] md:gap-x-2 overflow-hidden rounded-3xl md:rounded-xl border border-transparent md:border-border bg-secondary/60 md:bg-card p-3 md:p-0 shadow-card-shadow transition-all duration-250 hover:shadow-card-shadow-hover hover:-translate-y-0.5">

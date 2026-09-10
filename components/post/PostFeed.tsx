@@ -79,7 +79,7 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
 
     return (
         <>
-        <div className={`mt-5 grid ${posts.length ? "grid-cols-1" : "place-items-center"} gap-6`}>
+        <div className={`grid ${posts.length ? "grid-cols-1" : "place-items-center"} gap-4 py-5`}>
             {posts.length != 0 ? (
             <Suspense fallback={<BlogCardSkeleton />}>
                 {
