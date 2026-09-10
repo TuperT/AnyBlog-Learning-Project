@@ -23,7 +23,13 @@ export const PUT = async (request: NextRequest) => {
             select: { id: true },
         });
 
-        if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });
+        if (!user) {
+            const response = NextResponse.json(
+                { message: "User not found" },
+                { status: 404 }
+            );
+            return response;
+        }
 
         await prisma.user.update({
             where: {

@@ -30,6 +30,7 @@ const ChangeBannerImage = () => {
 
         if (!res.ok) {
             toast.error(result.message || "Failed to change banner image");
+            return;
         }
 
         toast.success("Banner image succesfully change", { duration: 5 })
@@ -37,15 +38,18 @@ const ChangeBannerImage = () => {
     }
 
     return (
-        <div className="relative">
-            <Input 
-            type="file"
-            accept="image/*"
-            onChange={handleInputChange}
-            className="absolute inset-0 w-full h-full cursor-pointer opacity-0 focus:opacity-100 focus:w-64 focus:-translate-x-54 transition-all duration-200 z-10"
+        <label className="relative inline-flex cursor-pointer">
+            <Input
+                type="file"
+                accept="image/*"
+                onChange={handleInputChange}
+                className="absolute inset-0 h-full w-full cursor-pointer opacity-0 z-10"
             />
-            <Button variant="outline"><ImagePlus /> Change Banner</Button>
-        </div>
+            
+            <Button type="button" variant="outline">
+                <ImagePlus /> Change Banner
+            </Button>
+        </label>
     )
 }
 

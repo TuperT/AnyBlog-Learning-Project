@@ -43,7 +43,7 @@ const ChangeProfileImage = () => {
     }
 
     return (
-        <div className="relative">
+        <label className="relative inline-flex cursor-pointer">
             <Input
                 type="file"
                 accept="image/*"
@@ -55,7 +55,7 @@ const ChangeProfileImage = () => {
                 <ImagePlus />
                 Change Profile
             </Button>
-        </div>
+        </label>
     )
 }
 

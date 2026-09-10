@@ -24,7 +24,14 @@ export const PUT = async (request: NextRequest) => {
             select: { id: true },
         });
 
-        if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });
+        if (!user) {
+            const response = NextResponse.json(
+                { message: "Session user no longer exists. Please log in again." },
+                { status: 401 }
+            );
+            response.cookies.delete("jwt");
+            return response;
+        }
 
         if (!(file instanceof File)) {
             return NextResponse.json({ message: "Image file is required" }, { status: 400 });
