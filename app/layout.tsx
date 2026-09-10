@@ -4,7 +4,6 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import NavBar from "@/components/layout/NavBar";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 
@@ -55,7 +54,6 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NavBar />
           <Toaster richColors />
           <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col px-4 sm:px-8 lg:px-12">
             {children}

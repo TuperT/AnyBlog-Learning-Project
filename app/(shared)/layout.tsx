@@ -1,5 +1,12 @@
+import NavBar from "@/components/layout/NavBar"
+
 const layout = ({ children }: { children: React.ReactNode }) => {
-    return <>{children}</>
+    return (
+    <>
+    <NavBar />
+    {children}
+    </>
+    )
 }
 
 export default layout
