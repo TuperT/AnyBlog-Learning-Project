@@ -63,7 +63,7 @@ const NavbarProfile = async () => {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent>
-                    <DropdownMenuGroup className="flex flex-col">
+                    <DropdownMenuGroup className="flex flex-col justify-center">
                         <DropdownMenuItem render={
                             <Link
                                 className={buttonVariants({ variant: "ghost" })}
