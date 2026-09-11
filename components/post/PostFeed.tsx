@@ -43,54 +43,49 @@ type PostFeedProps = {
 const PostFeed = ({ initialPosts }: PostFeedProps) => {
     const [posts, setPosts] = useState(initialPosts);
     const [skip, setSkip] = useState(initialPosts.length);
-    const [newPostAvailable, setNewPostAvailable] = useState(true)
-    const loadingRef = useRef<boolean>(false)
-    const loaderRef = useRef<HTMLDivElement>(null);
+    const [hasMore, setHasMore] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
+    const loaderRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        let cancelled = false;
+        const observer = new IntersectionObserver(([entry]) => {
+            if (!entry.isIntersecting || isLoading || !hasMore) return;
 
-        const checkAvailability = async () => {
-            try {
-                const res = await fetch(`/api/blog/get-post?skip=${skip}&take=10`);
-                if (!res.ok) {
-                    if (!cancelled) setNewPostAvailable(false);
-                    return;
-                }
-                const nextPosts = await res.json();
-                if (!cancelled) setNewPostAvailable(nextPosts.length > 0);
-            } catch {
-                if (!cancelled) setNewPostAvailable(false);
-            }
-        };
+            setIsLoading(true);
 
-        checkAvailability();
+            fetch(`/api/blog/get-post?skip=${skip}&take=10`)
+                .then(async (response) => {
+                    if (!response.ok) {
+                        setHasMore(false);
+                        return;
+                    }
 
-        const observer = new IntersectionObserver(async ([entry]) => {
-            if (!entry.isIntersecting || loadingRef.current || !newPostAvailable) return;
+                    const newPosts: PostFeedPropsAuthor[] = await response.json();
 
-            loadingRef.current = true
+                    if (newPosts.length === 0) {
+                        setHasMore(false);
+                        return;
+                    }
 
-            try {
-                const response = await fetch(`/api/blog/get-post?skip=${skip}&take=10`);
-                if (!response.ok) return;
-                const newPosts: PostFeedPropsAuthor[] = await response.json();
+                    setPosts((currentPosts) => [...currentPosts, ...newPosts]);
+                    setSkip((currentSkip) => currentSkip + newPosts.length);
+                })
+                .catch(() => {
+                    setHasMore(false);
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        });
 
-                setPosts((currentposts) => [...currentposts, ...newPosts])
-                setSkip((currentSkips) => currentSkips + newPosts.length)
-            }
-            finally {
-                loadingRef.current = false
-            }
-        })
-
-        if (loaderRef.current) observer.observe(loaderRef.current)
+        if (loaderRef.current) {
+            observer.observe(loaderRef.current);
+        }
 
         return () => {
-            cancelled = true;
             observer.disconnect();
-        }
-    }, [skip, newPostAvailable])
+        };
+    }, [skip, isLoading, hasMore]);
 
     return (
         <>
@@ -137,7 +132,7 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
 
         <div ref={loaderRef} className="flex h-10 items-center justify-center">
             {
-            loadingRef && newPostAvailable && <LoaderCircle size={32} className="animate-spin" />
+                isLoading && hasMore && <LoaderCircle size={32} className="animate-spin" />
             }
         </div>
         </>
