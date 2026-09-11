@@ -21,7 +21,7 @@ export const PUT = async (request: NextRequest) => {
 
         const user = await prisma.user.findUnique({
             where: { id: decoded.userId },
-            select: { id: true },
+            select: { id: true, role: true },
         });
 
         if (!user) {
@@ -37,19 +37,20 @@ export const PUT = async (request: NextRequest) => {
             return NextResponse.json({ message: "Image file is required" }, { status: 400 });
         }
 
-        const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
         const MAX_FILE_SIZE_MB = 5; 
         const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
 
-        const uploadResult = await new Promise<{ secure_url: string }>((resolve, reject) => {
-            if(file.size > MAX_FILE_SIZE_BYTES) {
-                return NextResponse.json(
-                    { message: "Image exceeds 5MB limit" },
-                    { status: 400 }
-                )
-            }
+        if (file.size > MAX_FILE_SIZE_BYTES && user.role !== "ADMIN") {
+            return NextResponse.json(
+                { message: "Image exceeds 5MB limit" },
+                { status: 413 }
+            );
+        }
 
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+
+        const uploadResult = await new Promise<{ secure_url: string }>((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
                 { folder: "blog-posts" },
                 (error, result) => {
@@ -75,6 +76,6 @@ export const PUT = async (request: NextRequest) => {
         return NextResponse.json({ success: true })
     } catch (error) {
         console.error(error);
-        return NextResponse.json("Internal server error", { status: 500 });
+        return NextResponse.json({ message: "Internal server error" }, { status: 500 });
     }
 }

@@ -7,6 +7,8 @@ import { ChangeEvent } from 'react'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024;
+
 const ChangeProfileImage = () => {
     const router = useRouter();
 
@@ -23,23 +25,50 @@ const ChangeProfileImage = () => {
     }
 
     const handleProfileImageUpload = async (image: File) => {
-        const formData = new FormData();
-        formData.append("image-profile", image);
-
-        const res = await fetch("/api/user/update-profile", {
-            method: "PUT",
-            body: formData,
-        });
-
-        const result = await res.json();
-
-        if (!res.ok) {
-            toast.error(result.message || "Failed to change profile image");
+        if (image.size > MAX_FILE_SIZE_BYTES) {
+            toast.error("Image exceeds 5MB limit");
             return;
         }
 
-        toast.success("Profile image successfully changed");
-        router.refresh();
+        const formData = new FormData();
+        formData.append("image-profile", image);
+
+        try {
+            const res = await fetch("/api/user/update-profile", {
+                method: "PUT",
+                body: formData,
+            });
+
+            const contentType = res.headers.get("content-type") || "";
+            const fallbackMessage = res.status === 413
+                ? "Image exceeds 5MB limit"
+                : "Failed to change profile image";
+
+            let result: { message?: string } = {};
+
+            if (contentType.includes("application/json")) {
+                try {
+                    result = await res.json();
+                } catch {
+                    result = { message: fallbackMessage };
+                }
+            } else {
+                const text = await res.text();
+                if (text) {
+                    result = { message: fallbackMessage };
+                }
+            }
+
+            if (!res.ok) {
+                toast.error(result.message || fallbackMessage);
+                return;
+            }
+
+            toast.success("Profile image successfully changed");
+            router.refresh();
+        } catch {
+            toast.error("Failed to change profile image");
+        }
     }
 
     return (
