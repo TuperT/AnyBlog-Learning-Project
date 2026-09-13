@@ -10,24 +10,25 @@ import { Separator } from "@/components/ui/separator"
 import { prisma } from "@/lib/db"
 import { FileText, Shield, UserRound } from "lucide-react"
 import Image from "next/image"
-import { redirect } from "next/navigation"
+import { notFound } from "next/navigation"
 import { Suspense } from "react"
 
 const Page = async ({ params, searchParams } 
     : { 
-        params: Promise<{ slug: string }> ,
+        params: Promise<{ username: string }> ,
         searchParams: Promise<{search?: string}>
     }) => {
-    const slug = await params
+    const param = await params
     const search = await searchParams
 
     const user = await prisma.user.findUnique({
         where: {
-            id: slug.slug
+            username: param.username
         },
         select: {
             id: true,
             name: true,
+            username: true,
             profilePicture: true,
             bannerPicture: true,
             role: true,
@@ -55,7 +56,7 @@ const Page = async ({ params, searchParams }
     // : user?.post
     
 
-    if (!user) redirect("/")
+    if (!user) notFound();
 
     return (
         <div className="mt-10 flex flex-col gap-8 px-0 sm:px-10 md:px-20 lg:px-30 xl:px-40">
@@ -68,7 +69,7 @@ const Page = async ({ params, searchParams }
                     width={1000}
                     height={1000}
                     />
-                    <ProfileBannerMenu pageIdParam={slug.slug} />
+                    <ProfileBannerMenu userId={user.id} />
                 </div>
 
                 <CardHeader className="relative -mt-14 flex items-center justify-center flex-col md:justify-baseline md:flex-row md:items-end">
@@ -81,14 +82,13 @@ const Page = async ({ params, searchParams }
                                 className="object-cover"
                             />
                         </div>
-                        <ProfileImageMenu pageIdParam={slug.slug} />
+                        <ProfileImageMenu userId={user.id} />
                     </div>
 
                     <div className="flex flex-1 flex-col md:flex-row items-end justify-between pb-1">
                         <div className="md:ml-4">
                             <span className="flex flex-row items-center justify-center md:justify-start gap-2 md:gap-4">
                                 <h1 className="text-2xl font-bold">{user.name}</h1>
-                                
                                 <span className="flex flex-row">
                                     <Badge className={user?.role === "ADMIN" ? "bg-linear-to-r from-cyan-400 via-blue-400 to-indigo-400" : ""}>
                                         {user?.role === "ADMIN" ? (<><Shield /> <p>ADMIN</p></>) : (<><UserRound /> <p>User</p></>)}

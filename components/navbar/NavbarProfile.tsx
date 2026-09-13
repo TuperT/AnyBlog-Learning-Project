@@ -35,6 +35,7 @@ const NavbarProfile = async () => {
         select: {
             id: true,
             name: true,
+            username: true,
             profilePicture: true,
         },
     })
@@ -67,7 +68,7 @@ const NavbarProfile = async () => {
                         <DropdownMenuItem render={
                             <Link
                                 className={buttonVariants({ variant: "ghost" })}
-                                href={`/profile/${user.id}`}
+                                href={`/profile/${user.username}`}
                             >
                                 <UserRound /> Profile
                             </Link>

@@ -289,6 +289,7 @@ export async function seedPosts(prisma: PrismaClient) {
         update: {},
         create: {
             name: "Demo Author",
+            username: "demoauthor",
             email: "demo@anyblog.dev",
             password: await argon2.hash("password123"),
         },

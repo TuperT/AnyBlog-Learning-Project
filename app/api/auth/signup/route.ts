@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
-import { generateToken } from "@/lib/utils";
+import { generateToken } from "@/lib/server/token";
+import { generateUsername } from "@/lib/server/username";
 import argon2 from "argon2";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
@@ -35,9 +36,12 @@ export const POST = async (request: NextRequest) => {
 
         if (findUser) return NextResponse.json({ message: "User with this email already exist" }, { status: 409 });
 
+        const username = await generateUsername(body.name)
+
         const user = await prisma.user.create({
             data: {
                 name: body.name,
+                username: username,
                 email: body.email,
                 password: await argon2.hash(body.password),
             },

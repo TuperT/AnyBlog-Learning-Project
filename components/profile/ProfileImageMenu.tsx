@@ -8,10 +8,10 @@ import { cookies } from "next/headers"
 import type { JwtPayload } from "@/types/auth"
 
 type profileMenuProps = {
-    pageIdParam: string
+    userId: string
 }
 
-const ProfileImageMenu = async ({ pageIdParam }: profileMenuProps) => {
+const ProfileImageMenu = async ({ userId }: profileMenuProps) => {
     const token = (await cookies()).get("jwt")
 
     if(!token) return;
@@ -34,7 +34,7 @@ const ProfileImageMenu = async ({ pageIdParam }: profileMenuProps) => {
     })
 
     const admin = user?.role === "ADMIN"
-    const userProfile = user?.id === pageIdParam
+    const userProfile = user?.id === userId
 
     return (
         <>
@@ -50,7 +50,7 @@ const ProfileImageMenu = async ({ pageIdParam }: profileMenuProps) => {
                         </DropdownMenuItem>
 
                         <DropdownMenuItem className="flex items-center justify-center">
-                            <DeleteProfileImage userId={pageIdParam} />
+                            <DeleteProfileImage userId={userId} />
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

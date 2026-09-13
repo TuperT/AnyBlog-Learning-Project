@@ -11,6 +11,7 @@ const page = async () => {
     const users = await prisma.user.findMany({
         select: {
             name: true,
+            username: true,
             profilePicture: true,
             id: true,
             role: true,
@@ -43,7 +44,7 @@ const page = async () => {
                         </span>
 
                         <Link
-                        href={`/profile/${user.id}`}
+                        href={`/profile/${user.username}`}
                         className={buttonVariants({ variant: "default", className: "shrink-0" })}
                         >
                             View

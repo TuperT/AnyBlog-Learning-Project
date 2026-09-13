@@ -10,10 +10,10 @@ import ChangeBannerImage from "./ChangeBannerImage"
 import DeleteBannerImage from "./DeleteBannerImage"
 
 type profileBannerMenuProps = {
-    pageIdParam: string
+    userId: string
 }
 
-const ProfileBannerMenu = async ({ pageIdParam }: profileBannerMenuProps) => {
+const ProfileBannerMenu = async ({ userId }: profileBannerMenuProps) => {
     const token = (await cookies()).get("jwt")
 
     if(!token) return;
@@ -36,7 +36,7 @@ const ProfileBannerMenu = async ({ pageIdParam }: profileBannerMenuProps) => {
     })
 
     const admin = user?.role === "ADMIN"
-    const userProfile = user?.id === pageIdParam
+    const userProfile = user?.id === userId
 
     return (
         <>
@@ -58,7 +58,7 @@ const ProfileBannerMenu = async ({ pageIdParam }: profileBannerMenuProps) => {
                         <DropdownMenuItem
                         className="flex items-center justify-center"
                         >
-                            <DeleteBannerImage userId={pageIdParam} />
+                            <DeleteBannerImage userId={userId} />
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
