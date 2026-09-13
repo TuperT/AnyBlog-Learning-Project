@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import argon2 from "argon2";
-import { generateToken } from "@/lib/utils";
+import { generateToken } from "@/lib/server/token";
 import { cookies } from "next/headers";
 
 export const POST = async (request: NextRequest) => {
