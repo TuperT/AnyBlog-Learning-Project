@@ -20,8 +20,13 @@ export const PUT = async (request: NextRequest) => {
         if (!decoded) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
         const user = await prisma.user.findUnique({
-            where: { id: decoded.userId },
-            select: { id: true, role: true },
+            where: { 
+                id: decoded.userId 
+            },
+            select: { 
+                id: true, 
+                role: true
+            },
         });
 
         if (!user) {

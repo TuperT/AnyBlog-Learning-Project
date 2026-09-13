@@ -68,7 +68,7 @@ export const POST = async (request: NextRequest) => {
 
         if (!imageUrl) return NextResponse.json({ message: "Internal server error: error creating image url" }, { status: 500 });
 
-        const slug = slugify(titleValue, { replacement: "-", lower: true })
+        const slug = slugify(titleValue, { replacement: "-", lower: true , remove: /[*+~.()'"!:@]/g})
 
         if (!slug) return NextResponse.json({ message: "Internal server error: error creating slug" }, { status: 500 });
         
