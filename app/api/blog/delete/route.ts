@@ -6,6 +6,10 @@ export const POST = async (request: NextRequest) => {
     try {
         const body = await request.json()
 
+        if (!body.id) {
+            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
         const token = request.cookies.get("jwt")?.value
 
         if (!token) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -15,30 +19,54 @@ export const POST = async (request: NextRequest) => {
 
         if (!decoded) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
+        const isPostExist = await prisma.post.findUnique({
+            where: {
+                id: body.id,
+            },
+        })
+
+        if (!isPostExist) return NextResponse.json({ message: "Post not found" }, { status: 404 });
+
         const user = await prisma.user.findUnique({
-            where: { id: decoded.userId },
-            select: { role: true },
+            where: { 
+                id: decoded.userId 
+            },
+            select: { 
+                id: true,
+                role: true 
+            },
         });
 
         if (!user) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-        if(user.role === "USER") return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        const post = await prisma.post.findUnique({
+            where: {
+                id: body.id,
+                authorId: user?.id
+            },
+            select: {
+                id: true,
+                authorId: true,
+            }
+        })
 
-        if (!body) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        if(user.role === "ADMIN") {
+            await prisma.post.delete({
+                where: {
+                    id: post?.id
+                }
+            })
+
+            return NextResponse.json({ success: true })
         }
 
-        if (!body.id) {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
+        if(user.role == "USER" && post?.authorId !== user.id) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-        const post = await prisma.post.delete({
+        await prisma.post.delete({
             where: {
                 id: body.id
             }
         })
-
-        if (!post) return NextResponse.json({ message: "Blog post already deleted" }, { status: 404 });
 
         return NextResponse.json({ success: true })
     } catch (error) {

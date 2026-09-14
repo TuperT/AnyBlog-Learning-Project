@@ -5,8 +5,10 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { useState } from "react";
 
 export function DeleteBlogMenuItem({ id }: { id: string }) {
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
     const router = useRouter()
 
     const handleDelete = async () => {
@@ -17,16 +19,16 @@ export function DeleteBlogMenuItem({ id }: { id: string }) {
         });
 
         if(!res.ok) {
-            toast.error("Fail to delete blog")
+            return toast.error("Fail to delete blog")
         }
 
         toast.success("Blog successfully deleted")
-        router.push("/")
+        return router.refresh()
     };
 
 
     return (
-        <Dialog>
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger render={
                 <Button variant="destructive">
                     <Trash2 />
@@ -45,7 +47,11 @@ export function DeleteBlogMenuItem({ id }: { id: string }) {
                 </DialogHeader>
 
                 <DialogFooter>
-                    <Button onClick={handleDelete} variant="destructive">
+                    <Button onClick={() => {
+                        handleDelete()
+                        setIsDialogOpen(false)
+                    }
+                    } variant="destructive">
                         <Trash2 />
                         Delete
                     </Button>
