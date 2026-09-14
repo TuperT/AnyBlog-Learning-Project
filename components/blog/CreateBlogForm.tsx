@@ -374,7 +374,8 @@ const CreateBlogForm = ({ name, profilePicture }: createBlogFormProps) => {
                     <div className="flex mt-10 justify-end">
                         <Button
                         type="submit"
-                        className={`w-[12vw] h-[6vh] ${isSubmited ? "opacity-0" : "opacity-100"}`}
+                        className={`${isSubmited ? "opacity-0" : "opacity-100"}`}
+                        size="lg"
                         disabled={isSubmited}
                         >
                             {isSubmited 
