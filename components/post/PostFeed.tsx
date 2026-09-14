@@ -23,6 +23,7 @@ type PostFeedPropsAuthor = Prisma.PostGetPayload<{
             select: {
                 id: true,
                 name: true,
+                username: true,
                 profilePicture: true
             }
         },
@@ -104,6 +105,7 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
                     slug={post.slug}
                     authorId={post.authorId}
                     author={post.author.name ?? "Unknown"}
+                    authorUsername={post.author.username}
                     authorImage={post.author.profilePicture ?? ""}
                     createdAt={post.createdAt}
                     categories={post.categories ?? []}

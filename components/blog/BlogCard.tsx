@@ -21,6 +21,7 @@ interface BlogCardProps {
     slug: string,
     authorId: string,
     author: string;
+    authorUsername: string | null;
     authorImage: string;
     createdAt: Date | string;
     updatedAt?: Date | string;
@@ -36,6 +37,7 @@ const BlogCard = ({
     description,
     slug,
     author,
+    authorUsername,
     authorId,
     authorImage,
     createdAt,
@@ -74,7 +76,7 @@ const BlogCard = ({
                     )}
                 </div>
 
-                <BlogMenu postId={id} />
+                <BlogMenu postId={id} authorId={authorId} />
             </div>
 
             {/* Cover image */}
@@ -102,26 +104,28 @@ const BlogCard = ({
                 </div>
 
                 <div className="flex flex-row items-center justify-between gap-2">
-                    <div className="flex min-w-0 flex-row gap-2 items-center">
-                        <Avatar size="sm" className="shrink-0">
-                            <AvatarImage src={authorImage} />
-                            <AvatarFallback>
-                                {author.at(0)}
-                            </AvatarFallback>
-                        </Avatar>
+                    <Link href={`/profile/${authorUsername}`}>
+                        <div className="flex min-w-0 flex-row gap-2 items-center">
+                            <Avatar size="sm" className="shrink-0">
+                                <AvatarImage src={authorImage} />
+                                <AvatarFallback>
+                                    {author.at(0)}
+                                </AvatarFallback>
+                            </Avatar>
 
-                        <div className="flex min-w-0 flex-col md:flex-row md:items-center md:gap-2 leading-tight">
-                            <p className="min-w-0 font-semibold font-jakarta truncate text-xs sm:text-sm">
-                                {author}
-                            </p>
-                            <p className="whitespace-nowrap text-[11px] sm:text-xs text-muted-foreground font-inter">
-                                {shortDate} · {`${readingTime} min read`}
-                            </p>
+                            <div className="flex min-w-0 flex-col md:flex-row md:items-center md:gap-2 leading-tight">
+                                <p className="min-w-0 font-semibold font-jakarta truncate text-xs sm:text-sm">
+                                    {author}
+                                </p>
+                                <p className="whitespace-nowrap text-[11px] sm:text-xs text-muted-foreground font-inter">
+                                    {shortDate} · {`${readingTime} min read`}
+                                </p>
+                            </div>
                         </div>
-                    </div>
+                    </Link>
 
                     <Link
-                        href={`/blog/${authorId}/${slug}`}
+                        href={`/blog/${authorUsername}/${slug}`}
                         className={buttonVariants({ variant: "link", className: "group shrink-0 px-0" })}
                     >
                         <p className="flex flex-row items-center text-sm">

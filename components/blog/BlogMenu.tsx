@@ -8,7 +8,8 @@ import Link from 'next/link'
 import { buttonVariants } from '../ui/button'
 
 type blogMenuProps = {
-    postId: string
+    postId: string;
+    authorId: string;
 }
 
 type CheckUserData = {
@@ -18,25 +19,44 @@ type CheckUserData = {
     userId: string;
 }
 
-const BlogMenu = ({ postId }: blogMenuProps) => {
-    const [data, setData] = useState<CheckUserData | null>(null);
+let sharedPermissionPromise: Promise<CheckUserData | null> | null = null;
+let sharedPermissionData: CheckUserData | null = null;
+
+async function getSharedPermission(): Promise<CheckUserData | null> {
+    if (sharedPermissionData) return sharedPermissionData;
+
+    if (!sharedPermissionPromise) {
+        sharedPermissionPromise = fetch("/api/user/check-user", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({}),
+        })
+            .then(async (res) => {
+                if (!res.ok) return null;
+
+                const json = await res.json();
+                sharedPermissionData = json;
+                return json;
+            })
+            .catch(() => null);
+    }
+
+    return await sharedPermissionPromise;
+}
+
+const BlogMenu = ({ postId, authorId }: blogMenuProps) => {
+    const [data, setData] = useState<CheckUserData | null>(sharedPermissionData);
 
     useEffect(() => {
         let cancelled = false;
 
         const checkUser = async () => {
             try {
-                const res = await fetch("/api/user/check-user", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ postId }),
-                });
+                const json = await getSharedPermission();
 
-                if (!res.ok) return;
-
-                const json = await res.json();
-
-                if (!cancelled) setData(json);
+                if (!cancelled && json?.success) {
+                    setData(json);
+                }
             } catch {
                 return;
             }
@@ -45,13 +65,16 @@ const BlogMenu = ({ postId }: blogMenuProps) => {
         checkUser();
 
         return () => { cancelled = true; };
-    }, [postId]);
+    }, []);
 
-    if (!data || !data.post) return null;
+    if (!data?.success || !data.post && !authorId) return null;
 
-    const canManage = data.isAdmin || data.post.authorId === data.userId;
+    const isOwnPost = authorId === data.userId;
+    const canManage = data.isAdmin || isOwnPost;
 
     if (!canManage) return null;
+
+    const postSlug = data.post?.slug ?? "";
 
     return (
         <DropdownMenu>
@@ -65,7 +88,7 @@ const BlogMenu = ({ postId }: blogMenuProps) => {
             align="end"
             className="w-full flex items-start justify-center flex-col gap-2"
             >
-                <Link className={buttonVariants({ variant: "ghost" })} href={`/edit/${data.userId}/${data.post.slug}`}>
+                <Link className={buttonVariants({ variant: "ghost" })} href={`/edit/${data.userId}/${postSlug}`}>
                     <PenBox /> Edit Post
                 </Link>
 

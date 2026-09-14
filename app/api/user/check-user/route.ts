@@ -5,8 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (request: NextRequest) => {
     try {
         const body = await request.json().catch(() => null)
-
-        if (!body?.postId) return ;
         const token = await getToken()
 
         if (!token) {
@@ -23,8 +21,19 @@ export const POST = async (request: NextRequest) => {
             }
         })
 
-        if(!user) {
+        if (!user) {
             return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        }
+
+        const response = {
+            success: true,
+            post: null,
+            isAdmin: user.role === "ADMIN",
+            userId: user.id,
+        };
+
+        if (!body?.postId) {
+            return NextResponse.json(response);
         }
 
         const post = await prisma.post.findUnique({
@@ -38,12 +47,10 @@ export const POST = async (request: NextRequest) => {
         })
 
         return NextResponse.json({
-            success: true,
+            ...response,
             post,
-            isAdmin: user.role === "ADMIN",
-            userId: user.id
         });
     } catch {
-        return;
+        return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
     }
 }
