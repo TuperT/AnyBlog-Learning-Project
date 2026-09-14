@@ -161,6 +161,7 @@ const Page = async ({ params, searchParams }
                                         contentLength={post.content.length}
                                         slug={post.slug}
                                         author={user.name}
+                                        authorUsername={user.username}
                                         authorId={post.authorId}
                                         authorImage={user.profilePicture ?? ""}
                                         createdAt={post.createdAt}
