@@ -17,7 +17,7 @@ const CATEGORIES = [
     { name: "Tutorial", color: "#10B981" },
 ] as const;
 
-const POSTS: SeedPost[] = [
+const BASE_POSTS: SeedPost[] = [
     {
         title: "Building Scalable Design Systems for Resilient Multi-Platform Apps",
         description:
@@ -277,7 +277,75 @@ Only upload when the incoming value is a real \`File\` with size > 0 — otherwi
         image: "https://picsum.photos/seed/anyblog-empty-states/1200/800",
         categories: ["UI/UX Design"],
     },
+
 ];
+
+const EXTRA_POST_TITLES = [
+    "Shipping Faster with Better Product Rituals",
+    "Patterns for Designing Friendly Internal Tools",
+    "A Practical Guide to Building Meaningful Dashboards",
+    "Developer Experience Starts with Better Feedback",
+    "From Idea to Launch: A Lightweight Product Workflow",
+    "Making APIs Easier to Understand",
+    "How To Turn Meeting Notes into Action",
+    "Creating Better Onboarding Journeys",
+    "Resilient Frontend Architecture for Growth Teams",
+    "Experiment Design for Better Product Decisions",
+    "Debugging Without Guesswork",
+    "A Gentle Introduction to Observability",
+    "How to Write Better Technical Documentation",
+    "Designing Content That People Actually Finish",
+    "Shipping Small Improvements That Compound",
+    "The Importance of Clear Ownership in Teams",
+    "Building a Better Release Checklist",
+    "Performance Is a Product Feature",
+    "How to Structure a Healthy Engineering Routine",
+    "Choosing the Right Automation for the Team",
+    "Lessons from a High-Trust Remote Team",
+    "Improving Quality Through Better Reviews",
+    "Making Product Analytics Less Confusing",
+    "Small UX Wins That Change User Behavior",
+    "Operational Readiness for Fast-Moving Teams",
+    "Growth Loops Without Adding Friction",
+    "Designing Better Feature Rollouts",
+    "Turning Customer Feedback into Better Decisions",
+    "A Playbook for Building Momentum",
+    "Making Technical Strategy Feel Actionable",
+];
+
+const EXTRA_POSTS: SeedPost[] = Array.from({ length: 30 }, (_, index) => {
+    const title = EXTRA_POST_TITLES[index % EXTRA_POST_TITLES.length];
+    const categoryPool = ["Engineering", "Tutorial", "UI/UX Design"] as const;
+    const category = categoryPool[index % categoryPool.length];
+
+    return {
+        title: `${title}`,
+        description: `A short field guide for teams who want to improve ${category.toLowerCase()} work without sacrificing momentum or clarity.`,
+        content: `## Why it matters
+
+Good teams improve the systems around delivery, not just the work itself.
+
+## Practical approach
+
+1. Start with a small shared signal.
+2. Make the next action obvious.
+3. Review the result and keep improving.
+
+> Momentum is built through repeatable decisions.
+
+## Example
+
+\`\`\`ts
+const nextStep = "make the system easier to maintain";
+console.log(nextStep);
+\`\`\`
+`,
+        image: `https://picsum.photos/seed/anyblog-extra-${index + 1}/1200/800`,
+        categories: [category],
+    };
+});
+
+const POSTS: SeedPost[] = [...BASE_POSTS, ...EXTRA_POSTS];
 
 /**
  * Seeds demo categories, a demo author, and demo posts.
