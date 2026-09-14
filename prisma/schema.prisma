@@ -43,6 +43,7 @@ model Post {
   authorId    String
   comments    PostComment[]
   categories  PostCategory[]
+  statistic   PostStatistic[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -63,4 +64,13 @@ model PostCategory {
   name  String
   color String
   post  Post[]
+}
+
+model PostStatistic {
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String   @id
+  readers   Int      @default(0)
+  like      Int      @default(0)
+  dislike   Int      @default(0)
+  shared    Int      @default(0)
 }
