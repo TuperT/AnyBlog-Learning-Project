@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { prisma } from "@/lib/db"
-import { formatDate } from "@/lib/utils"
+import { formatDate, formatNumber } from "@/lib/utils"
 import Image from "next/image"
 import Link from "next/link"
 import Markdown from "@/components/layout/Markdown"
@@ -110,7 +110,7 @@ const page = async ({ params }: { params: Promise<{ username:string, slug: strin
                     }
                     <span className="flex flex-row items-center gap-2">
                         <Eye size={16} className="text-primary" />
-                        <p className="text-sm opacity-80 font-inter">{stats.readers} reads</p>
+                        <p className="text-sm opacity-80 font-inter">{formatNumber(stats.readers)} reads</p>
                     </span>
                 </div>
 

@@ -2,6 +2,7 @@ import { Dot } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar"
 import Link from "next/link"
 import { buttonVariants } from "./button"
+import { formatNumber } from "@/lib/utils"
 
 type UserCardProps = {
     name: string,
@@ -29,15 +30,15 @@ const UserCard = ({ name, username, profileImage, postCount, readersCount }: Use
 
             <div className="flex flex-col items-center mt-2">
                 <div className="flex flex-row items-center py-2 px-4 rounded-sm">
-                    <span className="flex flex-row items-center gap-2">
-                        <p className="text-sm">{postCount}</p>
+                    <span className="flex flex-row items-center gap-1">
+                        <p className="text-sm">{formatNumber(postCount)}</p>
                         <p className="opacity-80 text-xs">Posts</p>
                     </span>
 
                     <Dot size={16} />
 
-                    <span className="flex flex-row items-center gap-2">
-                        <p className="text-sm">{readersCount}</p>
+                    <span className="flex flex-row items-center gap-1">
+                        <p className="text-sm">{formatNumber(readersCount)}</p>
                         <p className="opacity-80 text-xs">Readers</p>
                     </span>
                 </div>
