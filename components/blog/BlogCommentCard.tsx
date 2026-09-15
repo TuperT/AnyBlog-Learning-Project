@@ -27,7 +27,7 @@ const BlogCommentCard = (
 
     return (
         <div key={key} className="flex flex-row gap-2">
-            <Avatar className="border-2 border-primary">
+            <Avatar className="border-2 border-border">
                 <AvatarImage
                 src={authorProfilePicture}
                 alt="author profile picture comment"
@@ -36,7 +36,7 @@ const BlogCommentCard = (
                 <AvatarFallback>{authorName.at(0)}</AvatarFallback>
             </Avatar>
 
-            <div className="flex flex-col gap-1 w-full h-10vh border border-border bg-secondary text-primary py-2 px-3 rounded-md">
+            <div className="flex flex-col gap-1 w-full h-10vh border border-border bg-card text-card-foreground py-2 px-3 rounded-md">
                 <span className="leading-tight">
                     <p className="text-md font-semibold">
                         {authorName}
