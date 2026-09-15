@@ -71,6 +71,21 @@ const page = async ({ params }: { params: Promise<{ username:string, slug: strin
         },
     })
 
+    await prisma.userStatistic.upsert({
+        where: {
+            userId: post.authorId
+        },
+        update: {
+            readers: {
+                increment: 1,
+            },
+        },
+        create: {
+            userId: post.authorId,
+            readers: 1,
+        },
+    })
+
     return (
         <section className="grid grid-cols-1 md:grid-cols-[1.2fr_0.5fr] mt-5 gap-6">
             <article className="flex flex-col gap-4">

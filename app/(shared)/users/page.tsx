@@ -1,11 +1,7 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { buttonVariants } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
+import UserCard from "@/components/ui/UserCard"
 import { prisma } from "@/lib/db"
-import { Shield, UserRound } from "lucide-react"
-import Link from "next/link"
+import { UserRound } from "lucide-react"
 
 const page = async () => {
     const users = await prisma.user.findMany({
@@ -15,42 +11,27 @@ const page = async () => {
             profilePicture: true,
             id: true,
             role: true,
+            post: true,
+            statistic: {
+                select: {
+                    readers: true
+                }
+            }
         }
     })
 
     return (
         <main className="mt-5 grid grid-cols-1 gap-4 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-8 xl:grid-cols-4">
             {
-            users.length > 0 ? ( users.map((user) => (
-                <Card key={user.id} className="p-2">
-                    <span className="flex items-center justify-between gap-2">
-                        <span className="flex min-w-0 flex-row items-center gap-2">
-                            <Avatar size="lg" className="shrink-0">
-                                <AvatarImage
-                                src={user.profilePicture || "/default-avatar.png"}
-                                alt="profile picture"
-                                />
-
-                                <AvatarFallback>
-                                    {user.name.charAt(0)}
-                                </AvatarFallback>
-                            </Avatar>
-                            <span className="truncate text-sm font-semibold sm:inline sm:text-base">
-                                {user.name}
-                            </span>
-                            <Badge className={`shrink-0 ${user?.role === "ADMIN" ? "bg-linear-to-r from-cyan-400 via-blue-400 to-indigo-400" : ""}`}>
-                                {user?.role === "ADMIN" ? <Shield /> : <UserRound />}
-                            </Badge>
-                        </span>
-
-                        <Link
-                        href={`/profile/${user.username}`}
-                        className={buttonVariants({ variant: "default", className: "shrink-0" })}
-                        >
-                            View
-                        </Link>
-                    </span>
-                </Card>
+            users.length > 0 ? (users.map((user, key) => (
+                <UserCard
+                key={key}
+                name={user.name}
+                username={user.username || ""}
+                profileImage={user.profilePicture || ""}
+                postCount={user.post.length}
+                readersCount={user.statistic[0].readers ?? 0}
+                />
             ))
             ) : (
             <Empty className="min-h-[85vh] min-w-[85vw] flex items-center justify-center">

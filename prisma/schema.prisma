@@ -27,8 +27,18 @@ model User {
   role           userRole @default(USER)
   post           Post[]
   comment        PostComment[]
+  statistic      UserStatistic[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+}
+
+model UserStatistic {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @id
+  readers   Int      @default(0)
+  like      Int      @default(0)
+  dislike   Int      @default(0)
+  shared    Int      @default(0)
 }
 
 model Post {

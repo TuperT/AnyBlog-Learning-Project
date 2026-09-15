@@ -44,6 +44,14 @@ export const POST = async (request: NextRequest) => {
                 username: username,
                 email: body.email,
                 password: await argon2.hash(body.password),
+                statistic: {
+                    create: {
+                        dislike: 0,
+                        like: 0,
+                        readers: 0,
+                        shared: 0,
+                    }
+                }
             },
             select: {
                 id: true,
