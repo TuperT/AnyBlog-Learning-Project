@@ -90,8 +90,8 @@ const page = async ({ params }: { params: Promise<{ username:string, slug: strin
         <section className="grid grid-cols-1 md:grid-cols-[1.2fr_0.5fr] mt-5 gap-6">
             <article className="flex flex-col gap-4">
                 <div className="flex flex-row items-center justify-between">
-                    {
-                        post.categories.slice(0.2).map((category, key) => (
+                    {post.categories.length >=1 
+                    ? post.categories.slice(0.2).map((category, key) => (
                             <div key={key} className="flex min-w-0 flex-wrap items-center gap-2">
                                 {category && (
                                     <Badge
@@ -104,9 +104,11 @@ const page = async ({ params }: { params: Promise<{ username:string, slug: strin
                                     >
                                         {category.name}
                                     </Badge>
-                                )}
+                                )
+                                }
                             </div>
                         ))
+                    : <div></div>
                     }
                     <span className="flex flex-row items-center gap-2">
                         <Eye size={16} className="text-primary" />
