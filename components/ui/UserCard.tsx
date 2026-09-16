@@ -14,7 +14,7 @@ type UserCardProps = {
 
 const UserCard = ({ name, username, profileImage, postCount, readersCount }: UserCardProps) => {
     return (
-        <div className="flex flex-col items-center min-w-10 min-h-30 w-full h-full p-4 bg-card border-border rounded-md shadow-card-shadow transition-all duration-250 hover:shadow-card-shadow-hover hover:-translate-y-0.5">
+        <div className="flex flex-col items-center min-w-10 min-h-30 w-full h-full p-4 bg-card border-2 border-border rounded-md shadow-card-shadow transition-all duration-250 hover:shadow-card-shadow-hover hover:-translate-y-0.5">
             <Avatar className="size-14">
                 <AvatarFallback>
                     {name.at(0)}
@@ -45,7 +45,7 @@ const UserCard = ({ name, username, profileImage, postCount, readersCount }: Use
 
                 <Link 
                 href={`/profile/${username}`}
-                className={buttonVariants({ variant: "outline", className: "w-full mt-4 text-primary" })}
+                className={buttonVariants({ variant: "default", className: "w-full mt-4 text-primary" })}
                 >
                     View Profile
                 </Link>
