@@ -8,6 +8,7 @@ const page = async () => {
         select: {
             name: true,
             username: true,
+            shortDesc: true,
             profilePicture: true,
             id: true,
             role: true,
@@ -28,6 +29,7 @@ const page = async () => {
                 key={key}
                 name={user.name}
                 username={user.username || ""}
+                shortDesc={user.shortDesc}
                 profileImage={user.profilePicture || ""}
                 postCount={user.post.length}
                 readersCount={user.statistic[0].readers ?? 0}
