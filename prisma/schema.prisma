@@ -17,19 +17,20 @@ enum userRole {
   USER
 }
 model User {
-  id             String   @id @default(uuid())
-  profilePicture String?  @default("/default-avatar.png")
-  bannerPicture  String?  @default("/default-banner.png")
-  name           String   @db.VarChar(20)
-  username       String?  @unique @db.VarChar(30)
-  email          String   @unique
+  id             String         @id @default(uuid())
+  profilePicture String?        @default("/default-avatar.png")
+  bannerPicture  String?        @default("/default-banner.png")
+  name           String         @db.VarChar(20)
+  username       String?        @unique @db.VarChar(30)
+  email          String         @unique
   password       String 
-  role           userRole @default(USER)
+  role           userRole       @default(USER)
+  shortDesc      String         @default("AnyBlog Writer")
   post           Post[]
   comment        PostComment[]
   statistic      UserStatistic[]
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model UserStatistic {
