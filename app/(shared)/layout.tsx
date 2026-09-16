@@ -1,10 +1,14 @@
+import Footer from "@/components/layout/Footer"
 import NavBar from "@/components/layout/NavBar"
 
 const layout = ({ children }: { children: React.ReactNode }) => {
     return (
     <>
     <NavBar />
-    {children}
+    <div className="h-[85dvh]">
+        {children}
+    </div>
+    <Footer />
     </>
     )
 }

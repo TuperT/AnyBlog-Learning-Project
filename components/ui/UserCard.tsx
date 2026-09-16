@@ -26,9 +26,9 @@ const UserCard = ({ name, username, shortDesc, profileImage, postCount, readersC
 
             <span className="flex flex-col items-center justify-center mt-2">
                 <h1 className="font-jakarta font-semibold text-lg text-foreground leading-tight">{name}</h1>
-                <p className="font-inter text-sm text-foreground/60">@{username}</p>
+                <p className="font-inter text-sm text-muted-foreground">@{username}</p>
 
-                <p className="font-inter text-sm text-foreground/60 text-center mt-2 line-clamp-2">{shortDesc}</p>
+                <p className="font-inter text-sm text-muted-foreground text-center mt-2 line-clamp-2">{shortDesc}</p>
             </span>
 
             <div className="flex flex-col items-center">
