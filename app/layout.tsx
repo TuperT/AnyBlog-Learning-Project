@@ -55,7 +55,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Toaster richColors />
-          <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col px-4 sm:px-8 lg:px-12">
+          <main className="w-full max-w-7xl min-h-screen mx-auto flex-1 flex flex-col px-4 sm:px-8 lg:px-12">
             {children}
           </main>
         </ThemeProvider>

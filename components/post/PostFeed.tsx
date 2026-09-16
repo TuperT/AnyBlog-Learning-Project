@@ -138,7 +138,7 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
             }
             {
                 isLoading && hasMore && (
-                    <div className="grid grid-cols-1">
+                    <div className="grid grid-cols-1 gap-2">
                         <BlogCardSkeleton />
                         <BlogCardSkeleton />
                     </div>

@@ -3,13 +3,13 @@ import NavBar from "@/components/layout/NavBar"
 
 const layout = ({ children }: { children: React.ReactNode }) => {
     return (
-    <>
-    <NavBar />
-    <div className="h-[85dvh]">
-        {children}
-    </div>
-    <Footer />
-    </>
+        <div className="flex min-h-screen flex-col">
+            <NavBar />
+            <div className="flex-1">
+                {children}
+            </div>
+            <Footer />
+        </div>
     )
 }
 
