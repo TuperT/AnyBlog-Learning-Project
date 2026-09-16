@@ -77,7 +77,7 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
                 .finally(() => {
                     setIsLoading(false);
                 });
-        });
+        }, { rootMargin: "0px 0px 200px 0px" });
 
         if (loaderRef.current) {
             observer.observe(loaderRef.current);
@@ -132,7 +132,7 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
             )}
         </div>
 
-        <div ref={loaderRef} className="flex flex-col items-center justify-center">
+        <div ref={loaderRef} className="flex min-h-12 flex-col items-center justify-center">
             {
                 isLoading && hasMore && <LoaderCircle size={32} className="animate-spin" />
             }
