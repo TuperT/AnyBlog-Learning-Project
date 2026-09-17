@@ -21,10 +21,11 @@ const DeleteProfileImage = ({ userId }: deleteProfileImage) => {
             body: JSON.stringify({ id: userId })
         })
 
-        const result = res.json();
+        const result = await res.json();
 
         if (!res.ok) {
-            toast.error(result || "Failed to delete profile image");
+            toast.error(result?.message || "Failed to delete profile image");
+            return;
         }
 
         toast.success("Profile image succesfully deleted", { duration: 5 })

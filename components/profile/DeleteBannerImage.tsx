@@ -21,10 +21,11 @@ const DeleteBannerImage = ({ userId }: deleteBannerImage) => {
             body: JSON.stringify({ id: userId })
         })
 
-        const result = res.json();
+        const result = await res.json();
 
         if (!res.ok) {
-            toast.error(result || "Failed to delete banner image");
+            toast.error(result?.message || "Failed to delete banner image");
+            return;
         }
 
         toast.success("Banner image succesfully deleted", { duration: 5 })

@@ -16,7 +16,7 @@ export const PUT = async (request: NextRequest) => {
 
         if (!decoded) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-        if (body.id != decoded.userId || decoded.role != "ADMIN") return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+        if (body.id !== decoded.userId && decoded.role !== "ADMIN") return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
         const user = await prisma.user.findUnique({
             where: { id: body.id },

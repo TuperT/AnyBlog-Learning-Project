@@ -1,14 +1,14 @@
 import BlogCard from "@/components/blog/BlogCard"
 import { BlogCardSkeleton } from "@/components/blog/BlogCardSkeleton"
 import BlogSearch from "@/components/blog/BlogSearch"
-import ProfileBannerMenu from "@/components/profile/ProfileBannerMenu"
 import ProfileImageMenu from "@/components/profile/ProfileImageMenu"
+import ShareProfile from "@/components/profile/ShareProfile"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 import { Separator } from "@/components/ui/separator"
 import { prisma } from "@/lib/db"
-import { FileText, Shield, UserRound } from "lucide-react"
+import { Dot, FileText, Shield, UserRound } from "lucide-react"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
@@ -29,6 +29,7 @@ const Page = async ({ params, searchParams }
             id: true,
             name: true,
             username: true,
+            shortDesc: true,
             profilePicture: true,
             bannerPicture: true,
             role: true,
@@ -59,32 +60,52 @@ const Page = async ({ params, searchParams }
     if (!user) notFound();
 
     return (
-        <div className="mt-10 flex flex-col gap-8 px-0 sm:px-10 md:px-20 lg:px-30 xl:px-40">
+        <div className="mt-10 flex flex-col gap-8 px-0 sm:px-20 md:px-30 lg:px-40 xl:px-50">
             <Card className="overflow-hidden pt-0">
                 <div className="relative">
                     <Image
                     src={user.bannerPicture || "/default-banner.png"}
                     alt="profile picture banner image" 
-                    className="relative h-40 sm:h-60 lg:h-80 w-full bg-linear-to-r"
+                    className="relative h-40 sm:h-60 lg:h-80 w-full bg-linear-to-r rounded-b-lg"
                     width={1000}
                     height={1000}
                     />
-                    <ProfileBannerMenu userId={user.id} />
                 </div>
 
-                <CardHeader className="relative -mt-14 flex items-center justify-center flex-col md:justify-baseline md:flex-row md:items-end">
-                    <div className="relative">
-                        <div className="relative size-28 overflow-hidden rounded-full ring-4 ring-background">
-                            <Image
-                                src={user.profilePicture || "/default-avatar.png"}
-                                alt={`${user.name} profile picture`}
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                        <ProfileImageMenu userId={user.id} />
-                    </div>
+                <CardHeader className="relative -mt-20 flex items-center justify-center flex-col md:justify-baseline md:flex-row md:items-end">
+                    <div className="flex flex-row px-2 justify-between items-center w-full">
+                        <div className="flex flex-col">
+                            <div className="relative size-28 overflow-hidden rounded-full ring-4 ring-background">
+                                <Image
+                                    src={user.profilePicture || "/default-avatar.png"}
+                                    alt={`${user.name} profile picture`}
+                                    fill
+                                    className="object-cover"
+                                />
+                            </div>
 
+                            <span className="flex flex-col md:justify-start mt-2">
+                                <span className="flex flex-row items-center gap-2">
+                                    <h1 className="text-xl font-semibold font-jakarta">{user.name}</h1>
+                                    <Badge className={user?.role === "ADMIN" ? "bg-linear-to-r from-cyan-400 via-blue-400 to-indigo-400" : "bg-secondary text-primary"}>
+                                        {user?.role === "ADMIN" ? (<><Shield /> <p>ADMIN</p></>) : (<><UserRound /> <p>User</p></>)}
+                                    </Badge>
+                                </span>
+                                
+                                <span className="flex flex-row items-start">
+                                    <p className="tex-sm text-muted-foreground font-inter">@{user.username}</p>
+                                    <Dot />
+                                    <p className="tex-sm text-muted-foreground font-inter">{user.shortDesc}</p>
+                                </span>
+                            </span>
+                        </div>
+                        
+                        <div className="flex flex-row items-center gap-2">
+                            <ShareProfile />
+                            <ProfileImageMenu userId={user.id} />
+                        </div>
+                    </div>
+{/* 
                     <div className="flex flex-1 flex-col md:flex-row items-end justify-between pb-1">
                         <div className="md:ml-4">
                             <span className="flex flex-row items-center justify-center md:justify-start gap-2 md:gap-4">
@@ -104,7 +125,7 @@ const Page = async ({ params, searchParams }
                                 })}
                             </p>
                         </div>
-                    </div>
+                    </div> */}
                 </CardHeader>
 
                 <Separator />

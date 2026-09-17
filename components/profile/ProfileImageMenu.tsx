@@ -1,11 +1,14 @@
-import { Pencil } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { Pencil, SquarePen } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import DeleteProfileImage from "./DeleteProfileImage"
 import ChangeProfileImage from "./ChangeProfileImage"
 import { prisma } from "@/lib/db"
 import jwt from "jsonwebtoken"
 import { cookies } from "next/headers"
 import type { JwtPayload } from "@/types/auth"
+import { Button, buttonVariants } from "../ui/button"
+import ChangeBannerImage from "./ChangeBannerImage"
+import DeleteBannerImage from "./DeleteBannerImage"
 
 type profileMenuProps = {
     userId: string
@@ -39,12 +42,14 @@ const ProfileImageMenu = async ({ userId }: profileMenuProps) => {
     return (
         <>
         {admin || userProfile ? (
-            <span className="-right-2 bottom-4 lg:left-22 lg:top-16 z-2 flex items-center justify-center absolute rounded-full size-8 bg-accent">
-                <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        <Pencil className="size-5" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
+            <DropdownMenu>
+                <DropdownMenuTrigger className={buttonVariants({ variant: "default", className: "flex flex-row items-center" })}>
+                    <SquarePen /> Edit Profile
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>Profile Image</DropdownMenuLabel>
+
                         <DropdownMenuItem closeOnClick={false} className="flex items-center justify-center">
                             <ChangeProfileImage />
                         </DropdownMenuItem>
@@ -52,9 +57,28 @@ const ProfileImageMenu = async ({ userId }: profileMenuProps) => {
                         <DropdownMenuItem className="flex items-center justify-center">
                             <DeleteProfileImage userId={userId} />
                         </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </span>
+                    </DropdownMenuGroup>
+
+                    <DropdownMenuSeparator />
+
+                    <DropdownMenuGroup>
+                        <DropdownMenuLabel>Banner Image</DropdownMenuLabel>
+
+                        <DropdownMenuItem
+                        closeOnClick={false}
+                        className="flex items-center justify-center"
+                        >
+                            <ChangeBannerImage />
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem
+                        className="flex items-center justify-center"
+                        >
+                            <DeleteBannerImage userId={userId} />
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                </DropdownMenuContent>
+            </DropdownMenu>
         ) : ""}
         </>
     )
