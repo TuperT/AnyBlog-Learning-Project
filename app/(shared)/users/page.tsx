@@ -12,10 +12,14 @@ const page = async () => {
             profilePicture: true,
             id: true,
             role: true,
-            post: true,
             statistic: {
                 select: {
                     readers: true
+                }
+            },
+            _count: {
+                select: {
+                    post: true
                 }
             }
         }
@@ -31,7 +35,7 @@ const page = async () => {
                 username={user.username || ""}
                 shortDesc={user.shortDesc}
                 profileImage={user.profilePicture || ""}
-                postCount={user.post.length}
+                postCount={user._count.post}
                 readersCount={user.statistic[0].readers ?? 0}
                 />
             ))

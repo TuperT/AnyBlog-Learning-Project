@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import BlogCommentCard from "@/components/blog/BlogCommentCard"
 import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
+import { after } from "next/server"
 
 const page = async ({ params }: { params: Promise<{ username:string, slug: string }> }) => {
     const { username, slug } = await params
@@ -56,34 +57,39 @@ const page = async ({ params }: { params: Promise<{ username:string, slug: strin
 
     if (!post) return notFound();
 
-    const stats = await prisma.postStatistic.upsert({
-        where: {
-            postId: post.id,
-        },
-        update: {
-            readers: {
-                increment: 1,
-            },
-        },
-        create: {
-            postId: post.id,
-            readers: 1,
-        },
-    })
+    const statReader = post.statistic[0].readers;
 
-    await prisma.userStatistic.upsert({
-        where: {
-            userId: post.authorId
-        },
-        update: {
-            readers: {
-                increment: 1,
+    {/* Only update post statistic after the page is fully rendered */}
+    after(async () => {
+        await prisma.postStatistic.upsert({
+            where: {
+                postId: post.id,
             },
-        },
-        create: {
-            userId: post.authorId,
-            readers: 1,
-        },
+            update: {
+                readers: {
+                    increment: 1,
+                },
+            },
+            create: {
+                postId: post.id,
+                readers: 1,
+            },
+        })
+
+        await prisma.userStatistic.upsert({
+            where: {
+                userId: post.authorId
+            },
+            update: {
+                readers: {
+                    increment: 1,
+                },
+            },
+            create: {
+                userId: post.authorId,
+                readers: 1,
+            },
+        })
     })
 
     return (
@@ -112,7 +118,7 @@ const page = async ({ params }: { params: Promise<{ username:string, slug: strin
                     }
                     <span className="flex flex-row items-center gap-2">
                         <Eye size={16} className="text-primary" />
-                        <p className="text-sm opacity-80 font-inter">{formatNumber(stats.readers)} reads</p>
+                        <p className="text-sm opacity-80 font-inter">{formatNumber(statReader)} reads</p>
                     </span>
                 </div>
 

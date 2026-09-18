@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { prisma } from "./lib/db";
 
 export async function proxy(request: NextRequest) {
     try {
@@ -18,14 +17,6 @@ export async function proxy(request: NextRequest) {
         const decoded = jwt.verify(token, process.env.JWT_SECRET) as JwtPayload;
 
         if (!decoded.userId) {
-            return NextResponse.redirect(new URL('/auth/login', request.url))
-        }
-
-        const user = await prisma.user.findUnique({
-            where: { id: decoded.userId },
-        });
-
-        if (!user) {
             return NextResponse.redirect(new URL('/auth/login', request.url))
         }
 
