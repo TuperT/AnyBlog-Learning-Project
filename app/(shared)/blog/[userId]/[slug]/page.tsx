@@ -13,7 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import BlogCommentCard from "@/components/blog/BlogCommentCard"
 import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
-import { after } from "next/server"
+import BlogObserver from "@/components/blog/BlogObserver"
 
 const page = async ({ params }: { params: Promise<{ username:string, slug: string }> }) => {
     const { username, slug } = await params
@@ -57,40 +57,7 @@ const page = async ({ params }: { params: Promise<{ username:string, slug: strin
 
     if (!post) return notFound();
 
-    const statReader = post.statistic[0].readers;
-
-    {/* Only update post statistic after the page is fully rendered */}
-    after(async () => {
-        await prisma.postStatistic.upsert({
-            where: {
-                postId: post.id,
-            },
-            update: {
-                readers: {
-                    increment: 1,
-                },
-            },
-            create: {
-                postId: post.id,
-                readers: 1,
-            },
-        })
-
-        await prisma.userStatistic.upsert({
-            where: {
-                userId: post.authorId
-            },
-            update: {
-                readers: {
-                    increment: 1,
-                },
-            },
-            create: {
-                userId: post.authorId,
-                readers: 1,
-            },
-        })
-    })
+    const statReader = post.statistic[0]?.readers ?? 0;
 
     return (
         <section className="grid grid-cols-1 md:grid-cols-[1.2fr_0.5fr] mt-5 gap-6">
@@ -168,6 +135,13 @@ const page = async ({ params }: { params: Promise<{ username:string, slug: strin
                 <article className="w-full mt-6">
                     <Markdown
                     content={post?.content ?? ""}
+                    />
+
+                    <BlogObserver
+                        postId={post.id}
+                        element={
+                            <p className="text-sm mt-4 text-muted-foreground">The end</p>
+                        }
                     />
                 </article>
             </article>
