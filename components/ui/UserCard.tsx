@@ -48,6 +48,7 @@ const UserCard = ({ name, username, shortDesc, profileImage, postCount, readersC
 
                 <Link 
                 href={`/profile/${username}`}
+                prefetch={true}
                 className={buttonVariants({ variant: "default", className: "w-full mt-2 text-primary" })}
                 >
                     View Profile
