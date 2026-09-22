@@ -6,9 +6,8 @@ import ShareProfile from "@/components/profile/ShareProfile"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
-import { Separator } from "@/components/ui/separator"
 import { prisma } from "@/lib/db"
-import { Dot, FileText, Shield, UserRound } from "lucide-react"
+import { CalendarDays, Dot, FileText, Shield, SquareDashedText, ThumbsDown, ThumbsUp, UserRound } from "lucide-react"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
@@ -36,6 +35,13 @@ const Page = async ({ params, searchParams }
             bannerPicture: true,
             role: true,
             createdAt: true,
+            statistic: {
+                select: {
+                    readers: true,
+                    like: true,
+                    dislike: true
+                }
+            },
             post: {
                 orderBy: {
                     createdAt: "desc"
@@ -62,7 +68,7 @@ const Page = async ({ params, searchParams }
     if (!user) notFound();
 
     return (
-        <div className="mt-10 flex flex-col gap-8 px-0 sm:px-20 md:px-30 lg:px-40 xl:px-50">
+        <div className="mt-10 flex flex-col px-0 sm:px-20 md:px-30 lg:px-40 xl:px-50">
             <Card className="overflow-hidden pt-0">
                 <div className="relative">
                     <Image
@@ -77,7 +83,7 @@ const Page = async ({ params, searchParams }
                 <CardHeader className="relative -mt-20 flex items-center justify-center flex-col md:justify-baseline md:flex-row md:items-end">
                     <div className="flex flex-row px-2 justify-between items-center w-full">
                         <div className="flex flex-col">
-                            <div className="relative size-24 md:size-28 overflow-hidden rounded-full ring-4 ring-background">
+                            <div className="relative size-20 sm:size-24 md:size-28 overflow-hidden rounded-full ring-4 ring-background">
                                 <Image
                                     src={user.profilePicture || "/default-avatar.png"}
                                     alt={`${user.name} profile picture`}
@@ -98,8 +104,8 @@ const Page = async ({ params, searchParams }
                                 <span className="flex flex-col md:flex-row items-start">
                                     <p className="tex-sm text-muted-foreground font-inter">@{user.username}</p>
 
-                                    <span className="flex flex-row">
-                                        <Dot />
+                                    <span className="flex flex-row items-center">
+                                        <Dot size={12} />
                                         <p className="tex-sm text-muted-foreground font-inter">{user.shortDesc}</p>
                                     </span>
                                 </span>
@@ -111,53 +117,61 @@ const Page = async ({ params, searchParams }
                             <ProfileImageMenu userId={user.id} />
                         </div>
                     </div>
-                    
-                    {/*
-                    //TODO: Add account information general statistic
-                    <div className="flex flex-1 flex-col md:flex-row items-end justify-between pb-1">
-                        <div className="md:ml-4">
-                            <span className="flex flex-row items-center justify-center md:justify-start gap-2 md:gap-4">
-                                <h1 className="text-2xl font-bold">{user.name}</h1>
-                                <span className="flex flex-row">
-                                    <Badge className={user?.role === "ADMIN" ? "bg-linear-to-r from-cyan-400 via-blue-400 to-indigo-400" : ""}>
-                                        {user?.role === "ADMIN" ? (<><Shield /> <p>ADMIN</p></>) : (<><UserRound /> <p>User</p></>)}
-                                    </Badge>
-                                </span>
-                            </span>
+                </CardHeader>
 
-                            <p className="text-sm text-muted-foreground">
-                                Member since {new Date(user.createdAt).toLocaleDateString("id-ID", {
+                <CardContent className="flex flex-col sm:flex-row gap-4 pt-6">
+                    <div className="flex flex-row items-center gap-4">
+                        <span className="flex flex-row items-center gap-1 text-muted-foreground">
+                            <CalendarDays size={16} />
+
+                            <p className="text-[8px] md:text-xs">
+                                Joined {new Date(user.createdAt).toLocaleDateString("id-ID", {
                                     day: "numeric",
                                     month: "long",
                                     year: "numeric",
                                 })}
                             </p>
-                        </div>
-                    </div> */}
-                </CardHeader>
+                        </span>
 
-                <Separator />
+                        <span className="flex flex-row items-center gap-1 text-muted-foreground">
+                            <SquareDashedText size={16} />
 
-                <CardContent className="flex flex-row justify-around pt-6 text-center">
-                    <div>
-                        <p className="text-2xl font-bold">{user.post.length}</p>
-                        <p className="text-sm text-muted-foreground">Posts</p>
+                            <p className="text-[8px] md:text-xs">
+                                {user.post.length} Published
+                            </p>
+                        </span>
                     </div>
 
-                    <div>
-                        <p className="text-2xl font-bold">{user.post.filter((p) => p.published).length}</p>
-                        <p className="text-sm text-muted-foreground">Published</p>
+                    <div className="flex flex-row items-center gap-4">
+                        <span className="flex flex-row items-center gap-1 text-muted-foreground">
+                            <ThumbsUp size={16} />
+
+                            <p className="text-[8px] md:text-xs">
+                                Loved by {user.statistic[0].like ?? 0} user
+                            </p>
+                        </span>
+
+                        <span className="flex flex-row items-center gap-1 text-muted-foreground">
+                            <ThumbsDown size={16} />
+
+                            <p className="text-[8px] md:text-xs">
+                                Hated by {user.statistic[0].dislike ?? 0} user
+                            </p>
+                        </span>
                     </div>
                 </CardContent>
             </Card>
 
-            <section className="mb-20">
+            <section className="mt-4 mb-20">
                 <div className="flex items-center justify-between">
                     <h1 className="font-bold text-xl">Blogs</h1>
                     
+                    {/*
+                    //TODO: Implement blog search
                     <span className="w-sm">
                         <BlogSearch />
-                    </span>
+                    </span> 
+                    */}
                 </div>
 
                 {user.post.length === 0 ? (

@@ -43,8 +43,13 @@ const ProfileImageMenu = async ({ userId }: profileMenuProps) => {
         <>
         {admin || userProfile ? (
             <DropdownMenu>
-                <DropdownMenuTrigger className={buttonVariants({ variant: "default", className: "flex flex-row items-center" })}>
-                    <SquarePen /> Edit Profile
+                <DropdownMenuTrigger 
+                className={buttonVariants({ variant: "default", className: "flex flex-row items-center" })}
+                >
+                    <SquarePen />
+                    <span className="hidden sm:inline">
+                        Edit Profile
+                    </span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                     <DropdownMenuGroup>
