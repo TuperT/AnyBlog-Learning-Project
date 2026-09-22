@@ -76,7 +76,7 @@ const BlogCard = ({
                     )}
                 </div>
 
-                <BlogMenu postId={id} authorId={authorId} />
+                <BlogMenu postId={id} postSlug={slug} authorId={authorId} />
             </div>
 
             {/* Cover image */}

@@ -66,6 +66,7 @@ export default async function Home(
 
           <Link 
           href="/create"
+          prefetch={true}
           className={buttonVariants({ variant: "default", size: "lg" })}
           >
             <PenBox /> Create Blog

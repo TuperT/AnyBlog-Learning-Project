@@ -9,6 +9,7 @@ import { buttonVariants } from '../ui/button'
 
 type blogMenuProps = {
     postId: string;
+    postSlug: string;
     authorId: string;
 }
 
@@ -44,7 +45,7 @@ async function getSharedPermission(): Promise<CheckUserData | null> {
     return await sharedPermissionPromise;
 }
 
-const BlogMenu = ({ postId, authorId }: blogMenuProps) => {
+const BlogMenu = ({ postId, postSlug, authorId }: blogMenuProps) => {
     const [data, setData] = useState<CheckUserData | null>(sharedPermissionData);
 
     useEffect(() => {
@@ -74,8 +75,6 @@ const BlogMenu = ({ postId, authorId }: blogMenuProps) => {
 
     if (!canManage) return null;
 
-    const postSlug = data.post?.slug ?? "";
-
     return (
         <DropdownMenu>
             <DropdownMenuTrigger
@@ -88,7 +87,11 @@ const BlogMenu = ({ postId, authorId }: blogMenuProps) => {
             align="end"
             className="w-full flex items-start justify-center flex-col gap-2"
             >
-                <Link className={buttonVariants({ variant: "ghost" })} href={`/edit/${data.userId}/${postSlug}`}>
+                <Link 
+                className={buttonVariants({ variant: "ghost" })} 
+                href={`/edit/${data.userId}/${postSlug}`}
+                prefetch={true}
+                >
                     <PenBox /> Edit Post
                 </Link>
 
