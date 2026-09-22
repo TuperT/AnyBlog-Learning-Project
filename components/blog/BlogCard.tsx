@@ -126,6 +126,7 @@ const BlogCard = ({
 
                     <Link
                         href={`/blog/${authorUsername}/${slug}`}
+                        prefetch={true}
                         className={buttonVariants({ variant: "link", className: "group shrink-0 px-0" })}
                     >
                         <p className="flex flex-row items-center text-sm">

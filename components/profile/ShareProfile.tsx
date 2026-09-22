@@ -17,7 +17,10 @@ const ShareProfile = () => {
 
     return (
         <Button variant="outline" onClick={handleClick}>
-            <Share2 /> Share Profile
+            <Share2 />
+            <span className="hidden md:inline">
+                Share Profile
+            </span>
         </Button>
     )
 }

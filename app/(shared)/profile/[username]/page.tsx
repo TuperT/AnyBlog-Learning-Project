@@ -13,6 +13,8 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 
+// TODO: Redesign whole thing and add analytics graph
+
 const Page = async ({ params, searchParams } 
     : { 
         params: Promise<{ username: string }> ,
@@ -75,7 +77,7 @@ const Page = async ({ params, searchParams }
                 <CardHeader className="relative -mt-20 flex items-center justify-center flex-col md:justify-baseline md:flex-row md:items-end">
                     <div className="flex flex-row px-2 justify-between items-center w-full">
                         <div className="flex flex-col">
-                            <div className="relative size-28 overflow-hidden rounded-full ring-4 ring-background">
+                            <div className="relative size-24 md:size-28 overflow-hidden rounded-full ring-4 ring-background">
                                 <Image
                                     src={user.profilePicture || "/default-avatar.png"}
                                     alt={`${user.name} profile picture`}
@@ -86,16 +88,20 @@ const Page = async ({ params, searchParams }
 
                             <span className="flex flex-col md:justify-start mt-2">
                                 <span className="flex flex-row items-center gap-2">
-                                    <h1 className="text-xl font-semibold font-jakarta">{user.name}</h1>
+                                    <h1 className="text-lg md:text-xl font-semibold font-jakarta">{user.name}</h1>
+
                                     <Badge className={user?.role === "ADMIN" ? "bg-linear-to-r from-cyan-400 via-blue-400 to-indigo-400" : "bg-secondary text-primary"}>
                                         {user?.role === "ADMIN" ? (<><Shield /> <p>ADMIN</p></>) : (<><UserRound /> <p>User</p></>)}
                                     </Badge>
                                 </span>
                                 
-                                <span className="flex flex-row items-start">
+                                <span className="flex flex-col md:flex-row items-start">
                                     <p className="tex-sm text-muted-foreground font-inter">@{user.username}</p>
-                                    <Dot />
-                                    <p className="tex-sm text-muted-foreground font-inter">{user.shortDesc}</p>
+
+                                    <span className="flex flex-row">
+                                        <Dot />
+                                        <p className="tex-sm text-muted-foreground font-inter">{user.shortDesc}</p>
+                                    </span>
                                 </span>
                             </span>
                         </div>
@@ -105,7 +111,9 @@ const Page = async ({ params, searchParams }
                             <ProfileImageMenu userId={user.id} />
                         </div>
                     </div>
-{/* 
+                    
+                    {/*
+                    //TODO: Add account information general statistic
                     <div className="flex flex-1 flex-col md:flex-row items-end justify-between pb-1">
                         <div className="md:ml-4">
                             <span className="flex flex-row items-center justify-center md:justify-start gap-2 md:gap-4">
@@ -146,6 +154,7 @@ const Page = async ({ params, searchParams }
             <section className="mb-20">
                 <div className="flex items-center justify-between">
                     <h1 className="font-bold text-xl">Blogs</h1>
+                    
                     <span className="w-sm">
                         <BlogSearch />
                     </span>

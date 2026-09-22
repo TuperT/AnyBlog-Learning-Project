@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db"
 import jwt from "jsonwebtoken"
 import { cookies } from "next/headers"
 import type { JwtPayload } from "@/types/auth"
-import { Button, buttonVariants } from "../ui/button"
+import { buttonVariants } from "../ui/button"
 import ChangeBannerImage from "./ChangeBannerImage"
 import DeleteBannerImage from "./DeleteBannerImage"
 

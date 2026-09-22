@@ -12,6 +12,7 @@ const NavbarItem = () => {
         <div className="font-inter hidden items-center gap-2 md:flex">
             <Link
             href="/"
+            prefetch={true}
             className={`${activeTab == "Home" 
             ? buttonVariants({ variant: "active" }) 
             : buttonVariants({ variant: "inactive" })} `}
@@ -22,6 +23,7 @@ const NavbarItem = () => {
 
             <Link
             href="/users"
+            prefetch={true}
             className={`${activeTab == "Users" 
             ? buttonVariants({ variant: "active" }) 
             : buttonVariants({ variant: "inactive" })} `}

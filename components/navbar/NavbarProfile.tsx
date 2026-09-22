@@ -13,11 +13,15 @@ const NavbarProfile = async () => {
     if (!decoded) {
         return (
             <div className="flex items-center gap-2">
-                <Link href="/auth/signup" className={buttonVariants()}>
+                <Link 
+                href="/auth/signup"
+                prefetch={true}
+                className={buttonVariants()}>
                     Sign Up
                 </Link>
                 <Link
                     href="/auth/login"
+                    prefetch={true}
                     className={buttonVariants({
                     variant: "outline",
                     })}
@@ -69,6 +73,7 @@ const NavbarProfile = async () => {
                             <Link
                                 className={buttonVariants({ variant: "ghost" })}
                                 href={`/profile/${user.username}`}
+                                prefetch={true}
                             >
                                 <UserRound /> Profile
                             </Link>

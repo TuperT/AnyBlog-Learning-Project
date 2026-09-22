@@ -2,7 +2,7 @@ import Link from "next/link"
 
 const Footer = () => {
     return (
-        <footer className="flex flex-col sm:flex-row items-center justify-between px-2 py-4 text-muted-foreground border-t-2 border-border">
+        <footer className="flex flex-col sm:flex-row items-center justify-between px-2 py-4 text-muted-foreground border-t-2 border-border mt-4">
             <p className="font-jakarta text-[12px] md:text-sm">
                 &copy; AnyBlog. Minimalist publishing for thoughtful writers.
             </p>

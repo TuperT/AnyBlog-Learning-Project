@@ -24,6 +24,7 @@ const NavBar = () => {
                     successChildren={
                         <Link 
                         href="/create"
+                        prefetch={true}
                         className={buttonVariants({ variant: "default" })}
                         >
                             <PenBox /> Create

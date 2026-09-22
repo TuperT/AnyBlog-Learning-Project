@@ -21,6 +21,7 @@ const NavbarItemMobile = () => {
                     render={
                         <Link
                         href="/"
+                        prefetch={true}
                         className={`${activeTab == "Home" 
                         ? buttonVariants({ variant: "active" }) 
                         : buttonVariants({ variant: "inactive" })} `}
@@ -37,6 +38,7 @@ const NavbarItemMobile = () => {
                     render={
                         <Link
                         href="/users"
+                        prefetch={true}
                         className={`${activeTab == "Users" 
                         ? buttonVariants({ variant: "active" }) 
                         : buttonVariants({ variant: "inactive" })} `}
